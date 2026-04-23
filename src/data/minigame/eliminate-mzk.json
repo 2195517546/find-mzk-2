@@ -1,0 +1,66 @@
+{
+  "gameName": "消除mzk",
+  "gameDescription": "三消玩法，挑战不同难度",
+  "difficulties": [
+    {
+      "level": "easy",
+      "name": "简单",
+      "icon": "开心mzk",
+      "description": "轻松消除",
+      "count": 36,
+      "shuffles": 5,
+      "clears": 2
+    },
+    {
+      "level": "normal",
+      "name": "普通",
+      "icon": "飞行mzk",
+      "description": "稍有挑战",
+      "count": 72,
+      "shuffles": 3,
+      "clears": 1
+    },
+    {
+      "level": "hard",
+      "name": "困难",
+      "icon": "肌肉mzk",
+      "description": "极限挑战",
+      "count": 108,
+      "shuffles": 2,
+      "clears": 0
+    }
+  ],
+  "characters": [
+    "普通airi",
+    "普通akito",
+    "普通an",
+    "普通emu",
+    "普通ena",
+    "普通haruka",
+    "普通hiho",
+    "普通honami",
+    "普通ichika",
+    "普通knd",
+    "普通kohane",
+    "普通mfy",
+    "普通minori",
+    "普通mzk",
+    "普通nene",
+    "普通rui",
+    "普通saki",
+    "普通shizuku",
+    "普通toya",
+    "普通tsukasa",
+    "普通kaito",
+    "普通luka",
+    "普通meiko",
+    "普通miku",
+    "普通ren",
+    "普通rin",
+    "普通白miku"
+  ],
+  "icons": {
+    "shuffle": "怪核mzk",
+    "clear": "倒立mzk"
+  }
+}
