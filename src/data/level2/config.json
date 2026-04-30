@@ -1,0 +1,32 @@
+{
+  "levelName": "进入晓山瑞希",
+  "logo": "images/icon/nightcord_logo.webp",
+  "title": "Nightcord",
+  "fields": {
+    "username": {
+      "label": "用户名",
+      "placeholder": "请输入用户名",
+      "hint": "amia"
+    },
+    "password": {
+      "label": "密码",
+      "placeholder": "请输入密码",
+      "hint": "akiyama0827"
+    },
+    "captcha": {
+      "label": "验证码",
+      "placeholder": "请输入验证码"
+    }
+  },
+  "hint": "用户名: amia  密码: akiyama0827",
+  "correctUsername": "amia",
+  "correctPassword": "akiyama0827",
+  "errors": {
+    "emptyUsername": "请输入用户名",
+    "emptyPassword": "请输入密码",
+    "emptyCaptcha": "请输入验证码",
+    "wrongCaptcha": "验证码错误",
+    "wrongCredentials": "用户名或密码错误"
+  },
+  "loginButtonText": "登 录"
+}

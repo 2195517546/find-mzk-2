@@ -1,0 +1,356 @@
+{
+  "startNode": "0,1",
+  "endNode": "18,1",
+  "totalMikus": 7,
+  "nodes": {
+    "0,1": {
+      "type": "start",
+      "image": "空无一人的世界0.webp",
+      "connections": { "f": "0,2", "b": null, "l": null, "r": null },
+      "hasMiku": false
+    },
+    "0,2": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "0,3", "b": "0,1", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "0,3": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "0,4", "b": "0,2", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "0,4": {
+      "type": "across",
+      "image": "空无一人的世界BG.webp",
+      "connections": { "f": "0,5", "b": "0,3", "l": "-1,4", "r": "1,4" },
+      "hasMiku": false
+    },
+    "0,5": {
+      "type": "straight",
+      "image": "空无一人的世界_舞台_附带miku.webp",
+      "connections": { "f": null, "b": "0,4", "l": null, "r": null },
+      "hasMiku": true,
+      "mikuId": 2
+    },
+    "-1,4": {
+      "type": "straightorleft",
+      "image": "空无一人的世界_右边堆叠.webp",
+      "connections": { "f": null, "b": null, "l": "-2,4", "r": "0,4" },
+      "hasMiku": false
+    },
+    "-2,4": {
+      "type": "blockway_withmiku",
+      "image": "空无一人的世界_前方堆叠无法通行_附带miku.webp",
+      "connections": { "f": null, "b": null, "l": null, "r": "-1,4" },
+      "hasMiku": true,
+      "mikuId": 1
+    },
+    "1,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "0,4", "r": "2,4" },
+      "hasMiku": false
+    },
+    "2,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "1,4", "r": "3,4" },
+      "hasMiku": false
+    },
+    "3,4": {
+      "type": "straightorright",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": "3,3", "l": "2,4", "r": "4,4" },
+      "hasMiku": false
+    },
+    "4,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "3,4", "r": "5,4" },
+      "hasMiku": false
+    },
+    "5,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "4,4", "r": "6,4" },
+      "hasMiku": false
+    },
+    "6,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "5,4", "r": "7,4" },
+      "hasMiku": false
+    },
+    "7,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "6,4", "r": "8,4" },
+      "hasMiku": false
+    },
+    "8,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "7,4", "r": "9,4" },
+      "hasMiku": false
+    },
+    "3,3": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "3,4", "b": "3,2", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "3,2": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "3,3", "b": "3,1", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "3,1": {
+      "type": "straightorright",
+      "image": "空无一人的世界_左边堆叠.webp",
+      "connections": { "f": "3,2", "b": null, "l": null, "r": "4,1" },
+      "hasMiku": false
+    },
+    "4,1": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "3,1", "r": "5,1" },
+      "hasMiku": false
+    },
+    "5,1": {
+      "type": "blockway_withmiku",
+      "image": "空无一人的世界_前方堆叠无法通行_附带miku.webp",
+      "connections": { "f": null, "b": null, "l": "4,1", "r": null },
+      "hasMiku": true,
+      "mikuId": 3
+    },
+    "9,4": {
+      "type": "across",
+      "image": "空无一人的世界BG.webp",
+      "connections": { "f": "9,5", "b": "9,3", "l": "8,4", "r": "10,4" },
+      "hasMiku": false
+    },
+    "9,5": {
+      "type": "straight",
+      "image": "空无一人的世界_左侧遮挡.webp",
+      "connections": { "f": "9,6", "b": "9,4", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "9,6": {
+      "type": "straight",
+      "image": "空无一人的世界_左侧杂乱.webp",
+      "connections": { "f": "9,7", "b": "9,5", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "9,7": {
+      "type": "blockway_withmiku",
+      "image": "空无一人的世界_舞台_附带miku.webp",
+      "connections": { "f": null, "b": "9,6", "l": null, "r": null },
+      "hasMiku": true,
+      "mikuId": 4
+    },
+    "9,3": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "9,4", "b": "9,2", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "9,2": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "9,3", "b": "9,1", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "9,1": {
+      "type": "straightorright",
+      "image": "空无一人的世界_左边堆叠.webp",
+      "connections": { "f": "9,2", "b": null, "l": null, "r": "10,1" },
+      "hasMiku": false
+    },
+    "10,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "9,4", "r": "11,4" },
+      "hasMiku": false
+    },
+    "11,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "10,4", "r": "12,4" },
+      "hasMiku": false
+    },
+    "12,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "11,4", "r": "13,4" },
+      "hasMiku": false
+    },
+    "10,1": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "9,1", "r": "11,1" },
+      "hasMiku": false
+    },
+    "11,1": {
+      "type": "straightorleft",
+      "image": "空无一人的世界_右边堆叠.webp",
+      "connections": { "f": "11,2", "b": null, "l": "10,1", "r": null },
+      "hasMiku": false
+    },
+    "11,2": {
+      "type": "blockway_withmiku",
+      "image": "空无一人的世界_前方堆叠无法通行_附带miku.webp",
+      "connections": { "f": null, "b": "11,1", "l": null, "r": null },
+      "hasMiku": true,
+      "mikuId": 5
+    },
+    "13,4": {
+      "type": "across",
+      "image": "空无一人的世界0.webp",
+      "connections": { "f": "13,5", "b": "13,3", "l": "12,4", "r": "14,4" },
+      "hasMiku": false
+    },
+    "13,5": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "13,6", "b": "13,4", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "13,6": {
+      "type": "straightorright",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": "13,5", "l": null, "r": "14,6" },
+      "hasMiku": false
+    },
+    "13,3": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "13,4", "b": "13,2", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "13,2": {
+      "type": "straightorright",
+      "image": "空无一人的世界_左边堆叠.webp",
+      "connections": { "f": "13,3", "b": null, "l": null, "r": "14,2" },
+      "hasMiku": false
+    },
+    "14,4": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "13,4", "r": "15,4" },
+      "hasMiku": false
+    },
+    "15,4": {
+      "type": "straightorright",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": "15,3", "l": "14,4", "r": "16,4" },
+      "hasMiku": false
+    },
+    "14,6": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "13,6", "r": "15,6" },
+      "hasMiku": false
+    },
+    "15,6": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "14,6", "r": "16,6" },
+      "hasMiku": false
+    },
+    "14,2": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "13,2", "r": "15,2" },
+      "hasMiku": false
+    },
+    "15,2": {
+      "type": "straightorleft",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": "15,3", "b": null, "l": "14,2", "r": "16,2" },
+      "hasMiku": false
+    },
+    "15,3": {
+      "type": "straightorleft",
+      "image": "空无一人的世界_舞台_附带miku.webp",
+      "connections": { "f": null, "b": "15,2", "l": null, "r": null },
+      "hasMiku": true,
+      "mikuId": 6
+    },
+    "16,4": {
+      "type": "across",
+      "image": "空无一人的世界_右侧堆叠远景.webp",
+      "connections": { "f": "16,5", "b": "16,3", "l": "15,4", "r": null },
+      "hasMiku": false
+    },
+    "16,5": {
+      "type": "straight",
+      "image": "空无一人的世界_右边堆叠.webp",
+      "connections": { "f": "16,6", "b": "16,4", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "16,6": {
+      "type": "straightorleft",
+      "image": "空无一人的世界_右边堆叠.webp",
+      "connections": { "f": "16,7", "b": "16,5", "l": "15,6", "r": null },
+      "hasMiku": false
+    },
+    "16,7": {
+      "type": "blockway_withmiku",
+      "image": "空无一人的世界_前方堆叠无法通行_附带miku.webp",
+      "connections": { "f": null, "b": "16,6", "l": null, "r": null },
+      "hasMiku": true,
+      "mikuId": 7
+    },
+    "16,3": {
+      "type": "straightorleft",
+      "image": "空无一人的世界_右边堆叠.webp",
+      "connections": { "f": "16,4", "b": "16,2", "l": "15,3", "r": null },
+      "hasMiku": false
+    },
+    "16,2": {
+      "type": "straight",
+      "image": "空无一人的世界_右边堆叠.webp",
+      "connections": { "f": "16,3", "b": "16,1", "l": "15,2", "r": null },
+      "hasMiku": false
+    },
+    "16,1": {
+      "type": "straight",
+      "image": "空无一人的世界_堆叠只可以直行.webp",
+      "connections": { "f": "16,2", "b": "16,0", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "16,0": {
+      "type": "straightorright",
+      "image": "空无一人的世界_左边堆叠.webp",
+      "connections": { "f": "16,1", "b": null, "l": null, "r": "17,0" },
+      "hasMiku": false
+    },
+    "17,0": {
+      "type": "straight",
+      "image": "空无一人的世界_前方堆叠无法通行.webp",
+      "connections": { "f": null, "b": null, "l": "16,0", "r": "18,0" },
+      "hasMiku": false
+    },
+    "18,0": {
+      "type": "endbefore",
+      "image": "空无一人的世界BG2.webp",
+      "connections": { "f": "18,1", "b": null, "l": "17,0", "r": null },
+      "hasMiku": false
+    },
+    "18,1": {
+      "type": "end",
+      "image": "空无一人的世界_终点.webp",
+      "connections": { "f": null, "b": "18,0", "l": null, "r": null },
+      "hasMiku": false
+    },
+    "19,0": {
+      "type": "unused",
+      "image": "空无一人的世界_终点.webp",
+      "connections": { "f": null, "b": null, "l": null, "r": null },
+      "hasMiku": false
+    }
+  }
+}
