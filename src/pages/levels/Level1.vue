@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import levelConfig from '@/data/level1/config.json'
+import { getImageUrl } from '@/utils/imageHelper'
 
 const emit = defineEmits(['win'])
 const found = ref(false)
@@ -34,7 +35,8 @@ function generateCharacterList() {
     y: targetY,
     rotation: Math.random() * 360,
     zIndex: 0, // 最底层
-    touching: false // 触摸状态
+    touching: false, // 触摸状态
+    dismissed: false // 是否已消除
   })
 
   // 然后生成所有干扰项，覆盖在目标上方
@@ -62,7 +64,8 @@ function generateCharacterList() {
       y,
       rotation: Math.random() * 360,
       zIndex: i, // 层级递增
-      touching: false // 触摸状态
+      touching: false, // 触摸状态
+      dismissed: false // 是否已消除
     })
   }
 
@@ -72,11 +75,6 @@ function generateCharacterList() {
 onMounted(() => {
   characterList.value = generateCharacterList()
 })
-
-function getImageUrl(name) {
-  // 对文件名进行 URL 编码，处理中文字符
-  return `/assets/images/${encodeURIComponent(name)}.webp`
-}
 
 function onFound() {
   if (found.value) return
@@ -134,7 +132,7 @@ function handleReplay() {
       @touchend="handleTouchEnd(character)"
     >
       <img
-        :src="getImageUrl(character.name)"
+        :src="getImageUrl(`images/${character.name}.webp`)"
         :alt="character.name"
         class="character-img"
         loading="lazy"
@@ -153,9 +151,7 @@ function handleReplay() {
   min-height: calc(100vh - 120px);
   background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%);
   overflow: hidden;
-  /* 性能优化 */
-  will-change: scroll-position;
-  transform: translateZ(0);
+  contain: layout style;
 }
 
 .character-item {
@@ -164,11 +160,7 @@ function handleReplay() {
   transition: transform 0.2s;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  /* 性能优化 */
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform-style: preserve-3d;
+  contain: layout style;
 }
 
 .character-dismissed {
@@ -209,9 +201,6 @@ function handleReplay() {
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
   pointer-events: none;
-  /* 性能优化 */
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
 }
 
 @media (max-width: 640px) {

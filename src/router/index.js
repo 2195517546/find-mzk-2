@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('@/pages/MineSweeper.vue')
     },
     {
+      path: '/mzk-verify',
+      name: 'mzk-verify',
+      component: () => import('@/pages/MzkVerify.vue')
+    },
+    {
       path: '/level/:id',
       name: 'level',
       component: () => import('@/pages/levels/LevelWrapper.vue'),

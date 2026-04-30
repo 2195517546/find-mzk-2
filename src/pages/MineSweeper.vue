@@ -58,8 +58,8 @@
             <input v-model.number="customCols" type="number" min="5" max="30" />
           </label>
           <label>
-            雷数:
-            <input v-model.number="customMines" type="number" min="1" :max="customRows * customCols - 1" />
+            雷数 (最多{{ maxMines }}):
+            <input v-model.number="customMines" type="number" min="1" :max="maxMines" />
           </label>
         </div>
         <div class="modal-actions">
@@ -69,8 +69,8 @@
       </div>
     </div>
 
-    <!-- Control Buttons (mobile only) -->
-    <div v-if="gameStarted" class="control-btns mobile-only">
+    <!-- Control Buttons (all devices) -->
+    <div v-if="gameStarted" class="control-btns">
       <template v-if="gameLost">
         <div class="result-inline lose">💥 踩到晓山瑞希了...</div>
         <button class="control-btn control-btn-restart" @click="resetGame">🔄 重新开始</button>
@@ -81,34 +81,31 @@
           :class="{ active: currentMode === 'reveal' }"
           @click="currentMode = 'reveal'"
         >
-          🔍 排雷
+          <span class="btn-icon">🔍</span>
+          <span class="btn-text">扫雷</span>
         </button>
         <button
           class="control-btn"
           :class="{ active: currentMode === 'flag' }"
           @click="currentMode = 'flag'"
         >
-          🚩 插旗
+          <span class="btn-icon">🚩</span>
+          <span class="btn-text">插旗</span>
         </button>
         <button
           class="control-btn"
           :class="{ active: currentMode === 'question' }"
           @click="currentMode = 'question'"
         >
-          ❓ 疑惑
+          <span class="btn-icon">❓</span>
+          <span class="btn-text">标记</span>
         </button>
       </template>
     </div>
 
-    <!-- Desktop: game over inline -->
-    <div v-if="gameStarted && gameLost" class="control-btns desktop-only">
-      <div class="result-inline lose">💥 踩到晓山瑞希了...</div>
-      <button class="control-btn control-btn-restart" @click="resetGame">🔄 重新开始</button>
-    </div>
-
     <!-- Desktop hint -->
-    <div v-if="gameStarted && !gameOver" class="desktop-hint desktop-only">
-      左键揭开 · 右键插旗 · 双击数字一键扫
+    <div v-if="gameStarted && !gameOver" class="desktop-hint">
+      💡 电脑端可用右键快速切换 · 双击数字一键扫
     </div>
 
     <!-- Game Board -->
@@ -138,7 +135,7 @@
             <span v-else-if="cell.questioned">❓</span>
           </template>
           <template v-else>
-            <img v-if="cell.isMine" :src="cell.mzkImage" class="mine-img" />
+            <img v-if="cell.isMine" :src="cell.mzkImage" class="mine-img" :class="{ 'mine-exploded': cell.exploded }" />
             <span v-else-if="cell.adjacentMines > 0" class="number" :data-num="cell.adjacentMines">
               {{ cell.adjacentMines }}
             </span>
@@ -165,8 +162,11 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import TopBar from '@/components/TopBar.vue'
+import { getImageUrl } from '@/utils/imageHelper'
 
 const router = useRouter()
+
+const MAX_MINE_RATIO = 0.7 // 地雷数上限为格子总数的 70%
 
 // Game state
 const gameStarted = ref(false)
@@ -189,36 +189,36 @@ const explosionTimeouts = ref([])
 
 // MZK images for mines
 const mzkImages = [
-  '/assets/images/倒立mzk.webp',
-  '/assets/images/倒立走mzk.webp',
-  '/assets/images/偷听mzk.webp',
-  '/assets/images/右立mzk.webp',
-  '/assets/images/吐舌mzk.webp',
-  '/assets/images/呼啦啦mzk.webp',
-  '/assets/images/大眼mzk.webp',
-  '/assets/images/开心mzk.webp',
-  '/assets/images/怪核mzk.webp',
-  '/assets/images/惊吓mzk.webp',
-  '/assets/images/打坐mzk.webp',
-  '/assets/images/生气mzk.webp',
-  '/assets/images/讲话mzk.webp',
-  '/assets/images/走路mzk.webp',
-  '/assets/images/跑mzk.webp',
-  '/assets/images/通通mzk.webp',
-  '/assets/images/飞行mzk.webp',
-  '/assets/images/鲨鱼mzk.webp',
-  '/assets/images/emumzk.webp',
-  '/assets/images/肌肉mzk.webp',
-  '/assets/images/松鼠mzk.webp',
-  '/assets/images/侦探mzk.webp'
-]
+  'images/倒立mzk.webp',
+  'images/倒立走mzk.webp',
+  'images/偷听mzk.webp',
+  'images/右立mzk.webp',
+  'images/吐舌mzk.webp',
+  'images/呼啦啦mzk.webp',
+  'images/大眼mzk.webp',
+  'images/开心mzk.webp',
+  'images/怪核mzk.webp',
+  'images/惊吓mzk.webp',
+  'images/打坐mzk.webp',
+  'images/生气mzk.webp',
+  'images/讲话mzk.webp',
+  'images/走路mzk.webp',
+  'images/跑mzk.webp',
+  'images/通通mzk.webp',
+  'images/飞行mzk.webp',
+  'images/鲨鱼mzk.webp',
+  'images/emumzk.webp',
+  'images/肌肉mzk.webp',
+  'images/松鼠mzk.webp',
+  'images/侦探mzk.webp'
+].map(path => getImageUrl(path))
 
 // Win settlement images (需要准备这些图片)
 const winImages = [
-  '/assets/images/开心mzk.webp',
-  '/assets/images/飞行mzk.webp',
-  '/assets/images/通通mzk.webp'
-]
+  'images/开心mzk.webp',
+  'images/飞行mzk.webp',
+  'images/通通mzk.webp'
+].map(path => getImageUrl(path))
 const winImage = ref('')
 
 function shuffleArray(arr) {
@@ -253,10 +253,15 @@ function startGame(difficulty) {
   initBoard()
 }
 
+const maxMines = computed(() => {
+  return Math.floor(customRows.value * customCols.value * MAX_MINE_RATIO)
+})
+
 function startCustomGame() {
   rows.value = Math.min(Math.max(customRows.value, 5), 24)
   cols.value = Math.min(Math.max(customCols.value, 5), 30)
-  totalMines.value = Math.min(Math.max(customMines.value, 1), rows.value * cols.value - 9)
+  const maxAllowed = Math.floor(rows.value * cols.value * MAX_MINE_RATIO)
+  totalMines.value = Math.min(Math.max(customMines.value, 1), maxAllowed)
   showCustom.value = false
   initBoard()
 }
@@ -571,38 +576,69 @@ onUnmounted(() => {
 
 .control-btns {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 0 16px;
 }
 
 .control-btn {
-  padding: 12px 24px;
+  flex: 1;
+  min-width: 90px;
+  padding: 14px 20px;
   background: white;
-  border: 2px solid #F6B1B5;
-  border-radius: 20px;
+  border: 3px solid #F6B1B5;
+  border-radius: 16px;
   color: #F6B1B5;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(246, 177, 181, 0.15);
+}
+
+.control-btn .btn-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.control-btn .btn-text {
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
 .control-btn.active {
   background: linear-gradient(135deg, #F6B1B5, #d97ca8);
   color: white;
   border-color: #d97ca8;
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(246, 177, 181, 0.4);
 }
 
-.control-btn:hover {
+.control-btn:hover:not(.active) {
   transform: translateY(-2px);
+  border-color: #d97ca8;
+  box-shadow: 0 4px 12px rgba(246, 177, 181, 0.25);
+}
+
+.control-btn:active {
+  transform: scale(0.98);
 }
 
 .desktop-hint {
-  font-size: 0.82rem;
-  color: #bbb;
-  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  text-align: center;
 }
 
 .mobile-only { display: flex; }
@@ -645,6 +681,8 @@ onUnmounted(() => {
   user-select: none;
   width: clamp(24px, calc((100vw - 60px) / var(--cols, 9)), 40px);
   height: clamp(24px, calc((100vw - 60px) / var(--cols, 9)), 40px);
+  position: relative;
+  overflow: visible;
 }
 
 .cell:hover:not(.revealed) {
@@ -665,11 +703,21 @@ onUnmounted(() => {
 .cell.exploded {
   background: #ffcdd2;
   animation: mine-pop 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  z-index: 50;
 }
 
 .cell.triggered {
   background: #ff5252;
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 40px rgba(255, 0, 0, 0.4);
+  z-index: 150;
+  animation: cell-shake 0.3s ease-in-out;
+}
+
+@keyframes cell-shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
 }
 
 @keyframes mine-pop {
@@ -701,6 +749,33 @@ onUnmounted(() => {
   width: 80%;
   height: 80%;
   object-fit: contain;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.mine-img.mine-exploded {
+  width: 350%;
+  height: 350%;
+  z-index: 100;
+  filter: drop-shadow(0 12px 32px rgba(255, 0, 0, 0.7)) drop-shadow(0 0 20px rgba(255, 0, 0, 0.5));
+  animation: mine-explode 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+@keyframes mine-explode {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15) rotate(12deg);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.92) rotate(-8deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .number {
@@ -882,8 +957,16 @@ onUnmounted(() => {
   }
 
   .control-btn {
-    padding: 10px 14px;
-    font-size: 0.9rem;
+    min-width: 80px;
+    padding: 12px 16px;
+  }
+
+  .control-btn .btn-icon {
+    font-size: 1.3rem;
+  }
+
+  .control-btn .btn-text {
+    font-size: 0.85rem;
   }
 
   .result-inline {

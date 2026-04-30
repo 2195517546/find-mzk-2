@@ -6,19 +6,30 @@
       "options": [
         {
           "label": "出门逛街，和朋友一起玩",
-          "traits": { "social": 1, "energetic": 1 }
+          "traits": {
+            "social": 1,
+            "energetic": 1
+          }
         },
         {
           "label": "在家躺平，做自己的事",
-          "traits": { "alone": 1, "calm": 1 }
+          "traits": {
+            "alone": 1,
+            "calm": 1
+          }
         },
         {
           "label": "看情况，有时出门有时宅",
-          "traits": { "normal": 1 }
+          "traits": {
+            "normal": 1
+          }
         },
         {
           "label": "一个人出去探索新地方",
-          "traits": { "alone": 1, "action": 1 }
+          "traits": {
+            "alone": 1,
+            "action": 1
+          }
         }
       ]
     },
@@ -28,19 +39,31 @@
       "options": [
         {
           "label": "立刻行动，边做边学",
-          "traits": { "action": 1, "fast": 1 }
+          "traits": {
+            "action": 1,
+            "fast": 1
+          }
         },
         {
           "label": "先观察思考，再决定",
-          "traits": { "think": 1, "slow": 1 }
+          "traits": {
+            "think": 1,
+            "slow": 1
+          }
         },
         {
           "label": "问问别人的经验再说",
-          "traits": { "social": 1, "follow": 1 }
+          "traits": {
+            "social": 1,
+            "follow": 1
+          }
         },
         {
           "label": "看起来有趣就试试",
-          "traits": { "playful": 1, "normal": 1 }
+          "traits": {
+            "playful": 1,
+            "normal": 1
+          }
         }
       ]
     },
@@ -50,129 +73,381 @@
       "options": [
         {
           "label": "经常发，分享日常",
-          "traits": { "share": 1, "expressive": 1 }
+          "traits": {
+            "share": 1,
+            "expressive": 1
+          }
         },
         {
           "label": "很少发，只看不说",
-          "traits": { "lurk": 1, "reserved": 1 }
+          "traits": {
+            "lurk": 1,
+            "reserved": 1
+          }
         },
         {
           "label": "偶尔发点有意思的",
-          "traits": { "normal": 1, "playful": 1 }
+          "traits": {
+            "normal": 1,
+            "playful": 1
+          }
         },
         {
           "label": "只发重要的事情",
-          "traits": { "reserved": 1, "think": 1 }
+          "traits": {
+            "reserved": 1,
+            "think": 1
+          }
         }
       ]
     },
     {
       "id": "q4",
-      "text": "遇到困难时，你会？",
+      "text": "遇到困难时，你倾向于？",
       "options": [
         {
-          "label": "找人倾诉，寻求帮助",
-          "traits": { "social": 1, "emotional": 1 }
+          "label": "找朋友倾诉求助",
+          "traits": {
+            "social": 1,
+            "share": 1
+          }
         },
         {
           "label": "自己默默解决",
-          "traits": { "alone": 1, "strong": 1 }
+          "traits": {
+            "alone": 1,
+            "reserved": 1
+          }
         },
         {
-          "label": "先冷静分析问题",
-          "traits": { "think": 1, "calm": 1 }
+          "label": "先自己试试，不行再求助",
+          "traits": {
+            "think": 1,
+            "normal": 1
+          }
         },
         {
-          "label": "直接硬刚，不服就干",
-          "traits": { "action": 1, "strong": 1 }
+          "label": "直接找最懂的人请教",
+          "traits": {
+            "direct": 1,
+            "fast": 1
+          }
         }
       ]
     },
     {
       "id": "q5",
-      "text": "你的作息习惯是？",
+      "text": "你更喜欢哪种表达方式？",
       "options": [
         {
-          "label": "早睡早起，规律健康",
-          "traits": { "normal": 1, "calm": 1 }
+          "label": "直接说出来",
+          "traits": {
+            "direct": 1,
+            "expressive": 1
+          }
         },
         {
-          "label": "夜猫子，越晚越精神",
-          "traits": { "energetic": 1, "playful": 1 }
+          "label": "用表情包或暗示",
+          "traits": {
+            "indirect": 1,
+            "playful": 1
+          }
         },
         {
-          "label": "随心所欲，想睡就睡",
-          "traits": { "free": 1, "lazy": 1 }
+          "label": "看对象和场合决定",
+          "traits": {
+            "normal": 1,
+            "think": 1
+          }
         },
         {
-          "label": "看情况，没有固定时间",
-          "traits": { "normal": 1, "flexible": 1 }
+          "label": "不太说话，用行动表达",
+          "traits": {
+            "reserved": 1,
+            "action": 1
+          }
         }
       ]
     },
     {
       "id": "q6",
-      "text": "你的运动习惯是？",
+      "text": "你的生活节奏是？",
       "options": [
         {
-          "label": "经常运动，保持活力",
-          "traits": { "energetic": 1, "action": 1 }
+          "label": "快节奏，喜欢忙碌",
+          "traits": {
+            "fast": 1,
+            "energetic": 1
+          }
         },
         {
-          "label": "偶尔动动，不太积极",
-          "traits": { "normal": 1, "lazy": 1 }
+          "label": "慢节奏，享受平静",
+          "traits": {
+            "slow": 1,
+            "calm": 1
+          }
         },
         {
-          "label": "能躺着绝不坐着",
-          "traits": { "lazy": 1, "calm": 1 }
+          "label": "忙闲结合，张弛有度",
+          "traits": {
+            "normal": 1,
+            "think": 1
+          }
         },
         {
-          "label": "喜欢极限运动",
-          "traits": { "action": 1, "strong": 1 }
+          "label": "随心所欲，没有固定节奏",
+          "traits": {
+            "playful": 1,
+            "break": 1
+          }
         }
       ]
     },
     {
       "id": "q7",
-      "text": "你的表达方式是？",
+      "text": "面对规则，你会？",
       "options": [
         {
-          "label": "直来直去，有话直说",
-          "traits": { "expressive": 1, "strong": 1 }
+          "label": "遵守规则，按部就班",
+          "traits": {
+            "follow": 1,
+            "normal": 1
+          }
         },
         {
-          "label": "委婉含蓄，点到为止",
-          "traits": { "reserved": 1, "think": 1 }
+          "label": "打破常规，另辟蹊径",
+          "traits": {
+            "break": 1,
+            "weird": 1
+          }
         },
         {
-          "label": "幽默风趣，喜欢开玩笑",
-          "traits": { "playful": 1, "social": 1 }
+          "label": "灵活变通，看情况调整",
+          "traits": {
+            "think": 1,
+            "playful": 1
+          }
         },
         {
-          "label": "看情况，因人而异",
-          "traits": { "normal": 1, "flexible": 1 }
+          "label": "先了解规则背后的原因",
+          "traits": {
+            "think": 1,
+            "slow": 1
+          }
         }
       ]
     },
     {
       "id": "q8",
-      "text": "你对未来的态度是？",
+      "text": "你更喜欢什么样的内容？",
       "options": [
         {
-          "label": "充满期待，积极规划",
-          "traits": { "energetic": 1, "think": 1 }
+          "label": "正常的、易懂的",
+          "traits": {
+            "normal": 1,
+            "follow": 1
+          }
         },
         {
-          "label": "顺其自然，走一步看一步",
-          "traits": { "calm": 1, "free": 1 }
+          "label": "抽象的、怪核的",
+          "traits": {
+            "weird": 1,
+            "break": 1
+          }
         },
         {
-          "label": "有点焦虑，担心很多",
-          "traits": { "emotional": 1, "think": 1 }
+          "label": "有趣的、新奇的",
+          "traits": {
+            "playful": 1,
+            "energetic": 1
+          }
         },
         {
-          "label": "活在当下，不想太多",
-          "traits": { "playful": 1, "free": 1 }
+          "label": "深度的、有内涵的",
+          "traits": {
+            "think": 1,
+            "alone": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "在聚会上，你通常是？",
+      "options": [
+        {
+          "label": "话题中心，带动气氛",
+          "traits": {
+            "social": 1,
+            "energetic": 1,
+            "expressive": 1
+          }
+        },
+        {
+          "label": "安静观察，偶尔插话",
+          "traits": {
+            "alone": 1,
+            "reserved": 1,
+            "think": 1
+          }
+        },
+        {
+          "label": "跟着大家一起嗨",
+          "traits": {
+            "social": 1,
+            "normal": 1
+          }
+        },
+        {
+          "label": "找几个熟人聊天",
+          "traits": {
+            "social": 1,
+            "calm": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "你更倾向于？",
+      "options": [
+        {
+          "label": "脚踏实地，稳扎稳打",
+          "traits": {
+            "follow": 1,
+            "normal": 1,
+            "slow": 1
+          }
+        },
+        {
+          "label": "天马行空，自由飞翔",
+          "traits": {
+            "break": 1,
+            "weird": 1,
+            "fast": 1
+          }
+        },
+        {
+          "label": "有目标但也灵活",
+          "traits": {
+            "think": 1,
+            "normal": 1
+          }
+        },
+        {
+          "label": "边走边看，随机应变",
+          "traits": {
+            "playful": 1,
+            "action": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "别人对你的第一印象通常是？",
+      "options": [
+        {
+          "label": "开朗活泼，容易接近",
+          "traits": {
+            "social": 1,
+            "energetic": 1,
+            "expressive": 1
+          }
+        },
+        {
+          "label": "神秘安静，不太好懂",
+          "traits": {
+            "alone": 1,
+            "reserved": 1,
+            "weird": 1
+          }
+        },
+        {
+          "label": "友好温和，挺好相处",
+          "traits": {
+            "normal": 1,
+            "calm": 1
+          }
+        },
+        {
+          "label": "有趣独特，印象深刻",
+          "traits": {
+            "playful": 1,
+            "weird": 1,
+            "expressive": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "你更喜欢哪种思考方式？",
+      "options": [
+        {
+          "label": "逻辑清晰，条理分明",
+          "traits": {
+            "think": 1,
+            "follow": 1,
+            "normal": 1
+          }
+        },
+        {
+          "label": "跳跃发散，天马行空",
+          "traits": {
+            "break": 1,
+            "weird": 1,
+            "playful": 1
+          }
+        },
+        {
+          "label": "直觉感性，凭感觉走",
+          "traits": {
+            "action": 1,
+            "playful": 1
+          }
+        },
+        {
+          "label": "深度思考，慢慢琢磨",
+          "traits": {
+            "think": 1,
+            "slow": 1,
+            "alone": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "你对艺术作品的偏好是？",
+      "options": [
+        {
+          "label": "写实美观，看得懂",
+          "traits": {
+            "normal": 1,
+            "follow": 1
+          }
+        },
+        {
+          "label": "抽象实验，有冲击力",
+          "traits": {
+            "weird": 1,
+            "break": 1
+          }
+        },
+        {
+          "label": "有趣好玩，能引起共鸣",
+          "traits": {
+            "playful": 1,
+            "social": 1
+          }
+        },
+        {
+          "label": "深刻有内涵，值得思考",
+          "traits": {
+            "think": 1,
+            "alone": 1
+          }
         }
       ]
     }
@@ -180,83 +455,398 @@
   "mzkTypes": {
     "开心mzk": {
       "name": "开心mzk",
-      "subtitle": "快乐源泉",
-      "image": "/assets/images/开心mzk.webp",
-      "description": "你就像开心mzk一样，总是充满正能量，能给周围的人带来快乐。你乐观开朗，善于发现生活中的美好，是朋友圈里的开心果。",
-      "keywords": ["乐观", "开朗", "正能量"],
-      "traits": { "playful": 2, "social": 2, "energetic": 1 }
+      "subtitle": "纯真乐天派",
+      "description": "永远的快乐喷泉，只要有可爱的衣服和甜点就能原地复活。你的笑容具有治愈魔力，能让周围的人也不自觉地开心起来。即使遇到困难，你也总能找到积极的一面，用乐观的态度感染身边的每一个人。",
+      "keywords": [
+        "快乐",
+        "乐观",
+        "治愈"
+      ],
+      "image": "images/开心mzk.webp",
+      "cluster": "活力现充星团",
+      "traits": {
+        "social": 2,
+        "energetic": 2,
+        "expressive": 2,
+        "normal": 1
+      }
     },
-    "生气mzk": {
-      "name": "生气mzk",
-      "subtitle": "暴躁老哥",
-      "image": "/assets/images/生气mzk.webp",
-      "description": "你就像生气mzk一样，性格直爽，有话直说。虽然有时候脾气有点急，但你是个真性情的人，从不掩饰自己的情绪。",
-      "keywords": ["直爽", "真性情", "有个性"],
-      "traits": { "expressive": 2, "strong": 2, "action": 1 }
+    "讲话mzk": {
+      "name": "讲话mzk",
+      "subtitle": "安利达人",
+      "description": "你的话匣子一旦打开就关不上，特别是在聊起时尚周边的时候。你热衷于分享自己的发现和心得，总能用生动的语言把平凡的事物讲得妙趣横生。朋友们都说和你聊天永远不会冷场，因为你总有说不完的话题和故事。",
+      "keywords": [
+        "健谈",
+        "分享",
+        "热情"
+      ],
+      "image": "images/讲话mzk.webp",
+      "cluster": "活力现充星团",
+      "traits": {
+        "social": 2,
+        "share": 1,
+        "direct": 1,
+        "expressive": 2
+      }
     },
-    "打坐mzk": {
-      "name": "打坐mzk",
-      "subtitle": "佛系青年",
-      "image": "/assets/images/打坐mzk.webp",
-      "description": "你就像打坐mzk一样，内心平和，不争不抢。你喜欢安静的生活，懂得享受独处的时光，是个佛系的人。",
-      "keywords": ["平和", "佛系", "淡定"],
-      "traits": { "calm": 2, "alone": 2, "think": 1 }
-    },
-    "飞行mzk": {
-      "name": "飞行mzk",
-      "subtitle": "自由灵魂",
-      "image": "/assets/images/飞行mzk.webp",
-      "description": "你就像飞行mzk一样，向往自由，不喜欢被束缚。你有自己的想法和追求，勇于追逐梦想，是个自由的灵魂。",
-      "keywords": ["自由", "追梦", "独立"],
-      "traits": { "free": 2, "action": 2, "alone": 1 }
-    },
-    "肌肉mzk": {
-      "name": "肌肉mzk",
-      "subtitle": "力量担当",
-      "image": "/assets/images/肌肉mzk.webp",
-      "description": "你就像肌肉mzk一样，充满力量，勇往直前。你喜欢挑战，不怕困难，是个坚强的人。",
-      "keywords": ["坚强", "勇敢", "有力量"],
-      "traits": { "strong": 2, "action": 2, "energetic": 1 }
-    },
-    "倒立走mzk": {
-      "name": "倒立走mzk",
-      "subtitle": "独特视角",
-      "image": "/assets/images/倒立走mzk.webp",
-      "description": "你就像倒立走mzk一样，总是能从不同的角度看问题。你思维独特，富有创意，是个有趣的人。",
-      "keywords": ["独特", "创意", "有趣"],
-      "traits": { "playful": 2, "think": 2, "free": 1 }
-    },
-    "惊吓mzk": {
-      "name": "惊吓mzk",
-      "subtitle": "敏感宝宝",
-      "image": "/assets/images/惊吓mzk.webp",
-      "description": "你就像惊吓mzk一样，心思细腻，容易被感动。你敏感善良，能察觉到别人的情绪变化。",
-      "keywords": ["敏感", "善良", "细腻"],
-      "traits": { "emotional": 2, "reserved": 2, "think": 1 }
+    "走路mzk": {
+      "name": "走路mzk",
+      "subtitle": "行动派先锋",
+      "description": "不喜欢原地踏步，比起思考更愿意先跑起来看看风景。你相信行动胜过千言万语，与其纠结犹豫，不如迈开步伐去探索未知。每一步都是新的冒险，每一次前进都让你感到充实和满足。",
+      "keywords": [
+        "行动力",
+        "探索",
+        "前进"
+      ],
+      "image": "images/走路mzk.webp",
+      "cluster": "活力现充星团",
+      "traits": {
+        "action": 2,
+        "energetic": 1,
+        "normal": 1,
+        "slow": 1
+      }
     },
     "跑mzk": {
       "name": "跑mzk",
-      "subtitle": "行动派",
-      "image": "/assets/images/跑mzk.webp",
-      "description": "你就像跑mzk一样，充满活力，说干就干。你是个行动派，不喜欢拖延，效率很高。",
-      "keywords": ["高效", "活力", "行动派"],
-      "traits": { "action": 2, "energetic": 2, "fast": 1 }
+      "subtitle": "极速冲刺者",
+      "description": "速度就是一切，慢下来会死星人。你的生活节奏永远是快进模式，做事干脆利落从不拖泥带水。别人还在思考的时候，你已经冲到了终点。高效率是你的代名词，停下来对你来说简直是煎熬。",
+      "keywords": [
+        "快速",
+        "冲刺",
+        "活力"
+      ],
+      "image": "images/跑mzk.webp",
+      "cluster": "活力现充星团",
+      "traits": {
+        "action": 2,
+        "fast": 2,
+        "energetic": 2
+      }
+    },
+    "emumzk": {
+      "name": "emumzk",
+      "subtitle": "Wonderhoy! 感染者",
+      "description": "跨越了次元的活力，如果你抽到了这个，说明你今天的精神状态非常哇呼！你拥有能够点燃全场的超强感染力，就像一颗行走的能量炸弹，所到之处都充满欢声笑语。Wonderhoy不仅是口号，更是你的生活态度！",
+      "keywords": [
+        "Wonderhoy",
+        "活力",
+        "感染力"
+      ],
+      "image": "images/emumzk.webp",
+      "cluster": "活力现充星团",
+      "traits": {
+        "social": 2,
+        "energetic": 2,
+        "playful": 2,
+        "expressive": 2
+      }
+    },
+    "呼啦啦mzk": {
+      "name": "呼啦啦mzk",
+      "subtitle": "气氛组组长",
+      "description": "不管场面多冷，你都能用奇怪的律动化解尴尬。你是天生的气氛调节大师，总能在最需要的时候用独特的方式打破僵局。即使是最严肃的场合，你也能找到让大家放松的方法，让欢乐的气氛像呼啦圈一样转动起来。",
+      "keywords": [
+        "气氛",
+        "律动",
+        "化解"
+      ],
+      "image": "images/呼啦啦mzk.webp",
+      "cluster": "活力现充星团",
+      "traits": {
+        "social": 2,
+        "playful": 2,
+        "energetic": 2,
+        "weird": 1
+      }
+    },
+    "倒立mzk": {
+      "name": "倒立mzk",
+      "subtitle": "逻辑逆转者",
+      "description": "别人走路，你走钢丝；别人看世界，你颠倒世界。反向思维的神。你总能从完全不同的角度看待问题，当所有人都习惯性地按常规思考时，你已经倒立着找到了另一条路。这种独特的视角让你成为团队中不可或缺的创意源泉。",
+      "keywords": [
+        "逆向",
+        "颠倒",
+        "独特"
+      ],
+      "image": "images/倒立mzk.webp",
+      "cluster": "物理掉线星团",
+      "traits": {
+        "break": 2,
+        "weird": 2,
+        "think": 2,
+        "alone": 1
+      }
+    },
+    "倒立走mzk": {
+      "name": "倒立走mzk",
+      "subtitle": "反重力行者",
+      "description": "不仅要颠倒，还要边颠倒边前进。你是那种不走寻常路还要走得比别人快的人。在你看来，挑战越大越有意思，困难模式才是正确的打开方式。你用实际行动证明，即使用最不可思议的方式，也能到达目的地。",
+      "keywords": [
+        "反重力",
+        "前进",
+        "坚持"
+      ],
+      "image": "images/倒立走mzk.webp",
+      "cluster": "物理掉线星团",
+      "traits": {
+        "break": 2,
+        "weird": 2,
+        "action": 2,
+        "fast": 1
+      }
+    },
+    "右立mzk": {
+      "name": "右立mzk",
+      "subtitle": "偏离航线者",
+      "description": "总是能在寻常的生活中找到那个侧向的切入点。你不喜欢正面硬刚，更擅长从意想不到的角度切入问题。这种独特的思维方式让你总能发现别人忽略的细节，找到更巧妙的解决方案。",
+      "keywords": [
+        "侧向",
+        "偏离",
+        "切入"
+      ],
+      "image": "images/右立mzk.webp",
+      "cluster": "物理掉线星团",
+      "traits": {
+        "break": 1,
+        "weird": 1,
+        "playful": 2,
+        "think": 1
+      }
+    },
+    "飞行mzk": {
+      "name": "飞行mzk",
+      "subtitle": "自由梦想家",
+      "description": "脚踏实地太累了，你只想在赛博空间里自由滑翔。你向往不受束缚的生活，渴望突破一切限制。在你的世界里，重力只是个建议，规则只是参考，自由才是唯一的追求。你用想象力为自己插上翅膀，在思维的天空中自由翱翔。",
+      "keywords": [
+        "自由",
+        "飞翔",
+        "梦想"
+      ],
+      "image": "images/飞行mzk.webp",
+      "cluster": "物理掉线星团",
+      "traits": {
+        "break": 2,
+        "weird": 2,
+        "fast": 1,
+        "alone": 1
+      }
     },
     "偷听mzk": {
       "name": "偷听mzk",
-      "subtitle": "好奇宝宝",
-      "image": "/assets/images/偷听mzk.webp",
-      "description": "你就像偷听mzk一样，对周围的事物充满好奇。你喜欢观察，善于发现细节，是个细心的人。",
-      "keywords": ["好奇", "细心", "观察力强"],
-      "traits": { "lurk": 2, "think": 2, "reserved": 1 }
+      "subtitle": "情报局局长",
+      "description": "不小心路过，不小心听见，不小心就掌握了你的所有把柄。你拥有敏锐的观察力和超强的信息收集能力，总能在不经意间获取到关键情报。不是八卦，只是对周围环境保持高度的敏感性。你是团队里最了解情况的人。",
+      "keywords": [
+        "情报",
+        "观察",
+        "隐秘"
+      ],
+      "image": "images/偷听mzk.webp",
+      "cluster": "混沌恶作剧星团",
+      "traits": {
+        "lurk": 1,
+        "reserved": 2,
+        "playful": 2,
+        "alone": 2
+      }
+    },
+    "吐舌mzk": {
+      "name": "吐舌mzk",
+      "subtitle": "调皮小恶魔",
+      "description": "挑衅只是为了看你脸红，是那种让人恨不起来的捣蛋鬼。你的调皮总是恰到好处，既能活跃气氛又不会真的惹人生气。你深谙玩笑的分寸，知道如何用可爱的方式表达自己的小叛逆。大家都知道你是在开玩笑，所以反而更喜欢你。",
+      "keywords": [
+        "调皮",
+        "挑衅",
+        "可爱"
+      ],
+      "image": "images/吐舌mzk.webp",
+      "cluster": "混沌恶作剧星团",
+      "traits": {
+        "playful": 2,
+        "expressive": 2,
+        "indirect": 1,
+        "social": 1
+      }
+    },
+    "惊吓mzk": {
+      "name": "惊吓mzk",
+      "subtitle": "戏精本体",
+      "description": "擅长制造突发状况，虽然有时候会被自己吓到。你的反应总是比别人夸张十倍，把生活过成了一场连续剧。每一个小惊喜都能让你演绎出大片的效果，你的戏剧化表达方式让平淡的日常变得生动有趣。",
+      "keywords": [
+        "戏精",
+        "突发",
+        "夸张"
+      ],
+      "image": "images/惊吓mzk.webp",
+      "cluster": "混沌恶作剧星团",
+      "traits": {
+        "expressive": 2,
+        "playful": 2,
+        "action": 2,
+        "social": 1
+      }
+    },
+    "鲨鱼mzk": {
+      "name": "鲨鱼mzk",
+      "subtitle": "赛博掠食者",
+      "description": "可爱的外表下藏着尖牙，攻击性（指吐槽能力）极强。你的吐槽精准又犀利，总能一针见血地指出问题所在。虽然话语锋利，但大家都知道你是对事不对人。你的毒舌背后其实藏着对朋友的关心，只是表达方式比较特别。",
+      "keywords": [
+        "尖锐",
+        "吐槽",
+        "攻击性"
+      ],
+      "image": "images/鲨鱼mzk.webp",
+      "cluster": "混沌恶作剧星团",
+      "traits": {
+        "direct": 2,
+        "playful": 2,
+        "expressive": 1,
+        "break": 1
+      }
+    },
+    "松鼠mzk": {
+      "name": "松鼠mzk",
+      "subtitle": "囤积狂魔",
+      "description": "收集癖晚期患者，看到喜欢的东西就想藏起来。像松鼠一样把宝贝都藏好，但经常忘记藏在哪里。你的收藏夹、购物车、书签栏都塞得满满当当，每一样东西都承载着你的小心思。虽然有时会忘记自己收藏了什么，但翻出来的时候总能收获意外的惊喜。",
+      "keywords": [
+        "收集",
+        "囤积",
+        "可爱"
+      ],
+      "image": "images/松鼠mzk.webp",
+      "cluster": "混沌恶作剧星团",
+      "traits": {
+        "alone": 2,
+        "reserved": 2,
+        "playful": 1,
+        "calm": 1
+      }
     },
     "大眼mzk": {
       "name": "大眼mzk",
-      "subtitle": "天真烂漫",
-      "image": "/assets/images/大眼mzk.webp",
-      "description": "你就像大眼mzk一样，保持着一颗童心。你天真烂漫，对世界充满好奇和期待。",
-      "keywords": ["天真", "童心", "纯真"],
-      "traits": { "playful": 2, "normal": 2, "social": 1 }
+      "subtitle": "真实之眼",
+      "description": "一直在注视，从未被理解。你是那个能一眼看穿虚伪的人。你拥有超乎寻常的洞察力，能够看到事物表象之下的真相。虽然这种能力让你显得有些孤独，但你依然保持着对世界的好奇和观察。你的眼睛里藏着深邃的思考和对真实的执着追求。",
+      "keywords": [
+        "注视",
+        "洞察",
+        "真实"
+      ],
+      "image": "images/大眼mzk.webp",
+      "cluster": "抽象深渊星团",
+      "traits": {
+        "alone": 2,
+        "think": 2,
+        "weird": 2,
+        "reserved": 2
+      }
+    },
+    "怪核mzk": {
+      "name": "怪核mzk",
+      "subtitle": "超现实主义者",
+      "description": "你的存在本身就是一种艺术，不需要逻辑，只需要感觉。你活在自己构建的超现实世界里，用独特的审美和思维方式诠释着生活。别人觉得奇怪的东西，在你眼里都是艺术品。你不追求被理解，因为你知道真正的艺术本就超越常规。",
+      "keywords": [
+        "怪核",
+        "超现实",
+        "艺术"
+      ],
+      "image": "images/怪核mzk.webp",
+      "cluster": "抽象深渊星团",
+      "traits": {
+        "weird": 2,
+        "break": 2,
+        "alone": 2,
+        "think": 2
+      }
+    },
+    "打坐mzk": {
+      "name": "打坐mzk",
+      "subtitle": "禅修瑞希",
+      "description": "在喧闹的世界中心原地飞升，内心毫无波动甚至有点想吃拉面。你已经达到了某种禅的境界，外界的纷扰完全无法影响你的内心平静。你用一种超然的态度面对生活，不急不躁，不争不抢。在你看来，保持内心的平和比什么都重要。",
+      "keywords": [
+        "禅修",
+        "平静",
+        "佛系"
+      ],
+      "image": "images/打坐mzk.webp",
+      "cluster": "抽象深渊星团",
+      "traits": {
+        "calm": 2,
+        "alone": 2,
+        "slow": 2,
+        "reserved": 2
+      }
+    },
+    "通通mzk": {
+      "name": "通通mzk",
+      "subtitle": "不可名状者",
+      "description": "通通！通通！一种魔性的重复，你是那种能让人产生精神污染（褒义）的存在。你的表达方式独特到让人过目难忘，简单的重复在你这里变成了一种艺术。你用最简单的方式传递最强烈的情感，让人一听就忘不掉。这种魔性的感染力是你独有的魅力。",
+      "keywords": [
+        "魔性",
+        "重复",
+        "精神污染"
+      ],
+      "image": "images/通通mzk.webp",
+      "cluster": "抽象深渊星团",
+      "traits": {
+        "weird": 2,
+        "break": 2,
+        "playful": 2,
+        "alone": 1
+      }
+    },
+    "普通mzk": {
+      "name": "普通mzk",
+      "subtitle": "平和观测者",
+      "description": "虽然看起来很普通，但其实是在默默守护大家。你是那种不张扬但可靠的存在，总在关键时刻给予支持。你的平和不是平庸，而是一种成熟的智慧。你懂得在喧嚣中保持自我，用温柔的方式守护着身边的人。",
+      "keywords": [
+        "平和",
+        "守护",
+        "温柔"
+      ],
+      "image": "images/普通mzk.webp",
+      "cluster": "情绪基准星团",
+      "traits": {
+        "normal": 2,
+        "calm": 2,
+        "reserved": 1,
+        "follow": 1
+      }
+    },
+    "生气mzk": {
+      "name": "生气mzk",
+      "subtitle": "正义的小炮仗",
+      "description": "非常有原则，被踩到红线时会像气球一样瞬间炸裂。你对正义和公平有着强烈的执着，看不惯不公平的事情。虽然平时温和，但在原则问题上绝不妥协。你的愤怒来得快去得也快，因为你只是想让世界变得更好一点。",
+      "keywords": [
+        "原则",
+        "正义",
+        "爆发"
+      ],
+      "image": "images/生气mzk.webp",
+      "cluster": "情绪基准星团",
+      "traits": {
+        "direct": 2,
+        "expressive": 2,
+        "action": 2,
+        "normal": 1
+      }
+    },
+    "肌肉mzk": {
+      "name": "肌肉mzk",
+      "subtitle": "自律健身狂魔",
+      "description": "每天健身打卡，蛋白粉不离手。你相信身体是革命的本钱，用强大的自律和行动力塑造完美体魄。你的生活充满活力和正能量，总是精力充沛地迎接每一天的挑战。健身房是你的第二个家，汗水是你最好的勋章。",
+      "keywords": [
+        "健身",
+        "自律",
+        "活力"
+      ],
+      "image": "images/肌肉mzk.webp",
+      "cluster": "社交活力星团",
+      "traits": {
+        "action": 2,
+        "energetic": 2,
+        "follow": 1,
+        "normal": 1
+      }
     }
   }
 }

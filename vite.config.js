@@ -4,11 +4,32 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/games/2/',  // 部署路径，必须与Nginx配置一致
   plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  build: {
+    // 代码分割优化
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('pinia')) {
+              return 'vue-vendor'
+            }
+          }
+        }
+      }
+    },
+    // 使用 esbuild 压缩（更快，默认会移除 console 和 debugger）
+    minify: 'esbuild',
+    // 资源内联限制（小于4kb的图片转base64）
+    assetsInlineLimit: 4096,
+    // chunk 大小警告限制
+    chunkSizeWarningLimit: 1000
   },
   server: {
     port: 5174,

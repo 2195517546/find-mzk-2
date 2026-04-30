@@ -63,17 +63,24 @@
               </div>
             </div>
             <div class="mini-game-item" @click="goToMzkTest">
-              <img src="/assets/images/开心mzk.webp" alt="测测你是哪种晓山瑞希" class="game-icon">
+              <img :src="mzkTestIconUrl" alt="测测你是哪种晓山瑞希" class="game-icon">
               <div class="game-info">
                 <h3>测测你是哪种晓山瑞希</h3>
                 <p>找到属于你的那个MZK</p>
               </div>
             </div>
             <div class="mini-game-item" @click="goToMineSweeper">
-              <img src="/assets/images/惊吓mzk.webp" alt="扫晓山瑞希" class="game-icon">
+              <img :src="mineSweeperIconUrl" alt="扫晓山瑞希" class="game-icon">
               <div class="game-info">
                 <h3>扫晓山瑞希</h3>
                 <p>你扫不扫晓山瑞希！？</p>
+              </div>
+            </div>
+            <div class="mini-game-item" @click="goToMzkVerify">
+              <img :src="mzkVerifyIconUrl" alt="mzk验证" class="game-icon">
+              <div class="game-info">
+                <h3>mzk验证</h3>
+                <p>找出所有mzk，证明你不是机器人</p>
               </div>
             </div>
             <!-- 未来可以在这里添加更多小游戏 -->
@@ -81,17 +88,28 @@
         </div>
       </div>
     </Transition>
+
+    <!-- 新游戏确认弹窗 -->
+    <ConfirmDialog
+      :show="showNewGameConfirm"
+      type="confirm"
+      title="确认"
+      message="确定要开始新游戏吗？这将清除当前进度。"
+      @confirm="handleConfirmNewGame"
+      @cancel="handleCancelNewGame"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/game'
 import { getImageUrl } from '@/utils/imageHelper'
 import Footer from '@/components/Footer.vue'
 import LevelSelector from '@/components/LevelSelector.vue'
 import StorageDialog from '@/components/StorageDialog.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -99,17 +117,20 @@ const gameStore = useGameStore()
 const showLevelSelector = ref(false)
 const showStorageDialog = ref(false)
 const showMiniGameDialog = ref(false)
+const showNewGameConfirm = ref(false)
 
-const hasProgress = ref(gameStore.hasProgress)
+const hasProgress = computed(() => gameStore.hasProgress)
 
 // 获取Logo图片
 const logoUrl = getImageUrl('images/倒立走mzk.webp')
 // 获取小游戏图标
 const miniGameIconUrl = getImageUrl('images/生气mzk.webp')
+const mzkTestIconUrl = getImageUrl('images/开心mzk.webp')
+const mineSweeperIconUrl = getImageUrl('images/惊吓mzk.webp')
 
 onMounted(() => {
   // 检查是否需要显示存储权限弹窗
-  if (!gameStore.hasAcceptedStorage && !localStorage.getItem('find-mzk-2-storage-rejected')) {
+  if (!gameStore.hasAcceptedStorage && !sessionStorage.getItem('find-mzk-2-storage-rejected')) {
     showStorageDialog.value = true
   }
 })
@@ -120,13 +141,20 @@ const startGame = () => {
 
 const newGame = () => {
   if (hasProgress.value) {
-    if (confirm('确定要开始新游戏吗？这将清除当前进度。')) {
-      gameStore.resetProgress()
-      router.push('/level/1')
-    }
+    showNewGameConfirm.value = true
   } else {
     router.push('/level/1')
   }
+}
+
+const handleConfirmNewGame = () => {
+  showNewGameConfirm.value = false
+  gameStore.resetProgress()
+  router.push('/level/1')
+}
+
+const handleCancelNewGame = () => {
+  showNewGameConfirm.value = false
 }
 
 const handleAcceptStorage = () => {
@@ -136,7 +164,7 @@ const handleAcceptStorage = () => {
 
 const handleRejectStorage = () => {
   gameStore.rejectStorage()
-  localStorage.setItem('find-mzk-2-storage-rejected', 'true')
+  sessionStorage.setItem('find-mzk-2-storage-rejected', 'true')
   showStorageDialog.value = false
 }
 
@@ -154,6 +182,11 @@ const goToMzkTest = () => {
 
 const goToMineSweeper = () => {
   router.push('/minesweeper')
+}
+
+const mzkVerifyIconUrl = getImageUrl('images/普通mzk.webp')
+const goToMzkVerify = () => {
+  router.push('/mzk-verify')
 }
 </script>
 

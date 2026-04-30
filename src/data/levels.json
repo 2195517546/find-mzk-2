@@ -9,19 +9,19 @@
   },
   {
     "id": 2,
-    "name": "第2关",
-    "subtitle": "待实现",
-    "type": "pending",
+    "name": "进入晓山瑞希",
+    "subtitle": "登录晓山瑞希的Nightcord账号！找到他！",
+    "type": "login",
     "difficulty": 1,
-    "description": "待实现"
+    "description": "登录即可通关"
   },
   {
     "id": 3,
-    "name": "第3关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "探索晓山瑞希",
+    "subtitle": "在空无一人的世界中寻找7个miku",
+    "type": "maze",
+    "difficulty": 2,
+    "description": "迷宫探索，找到所有隐藏的miku"
   },
   {
     "id": 4,

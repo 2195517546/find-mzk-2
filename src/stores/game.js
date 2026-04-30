@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-const MAX_LEVEL = 10 // 最大关卡数
+export const MAX_LEVEL = 10 // 最大关卡数
 
 export const useGameStore = defineStore('game', () => {
   // 状态
@@ -15,12 +15,23 @@ export const useGameStore = defineStore('game', () => {
       const saved = localStorage.getItem('find-mzk-2-save')
       if (saved) {
         const data = JSON.parse(saved)
-        currentLevel.value = data.currentLevel || 1
-        completedLevels.value = data.completedLevels || []
+
+        // 校验数据结构，异常时回退到默认值
+        const level = Number(data.currentLevel)
+        if (Number.isInteger(level) && level >= 1 && level <= MAX_LEVEL) {
+          currentLevel.value = level
+        }
+
+        if (Array.isArray(data.completedLevels) &&
+            data.completedLevels.every(v => Number.isInteger(v) && v >= 1 && v <= MAX_LEVEL)) {
+          completedLevels.value = data.completedLevels
+        }
+
         hasAcceptedStorage.value = true
       }
     } catch (error) {
       console.error('加载存档失败:', error)
+      localStorage.removeItem('find-mzk-2-save')
     }
   }
 

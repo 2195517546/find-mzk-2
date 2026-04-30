@@ -1,7 +1,18 @@
 <template>
   <div class="mini-game-page">
+    <!-- 加载中 -->
+    <div v-if="!imagesLoaded" class="loading-screen">
+      <div class="loading-content">
+        <h2>加载中...</h2>
+        <div class="progress-bar">
+          <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
+        </div>
+        <p>{{ loadingProgress }}%</p>
+      </div>
+    </div>
+
     <!-- 难度选择 -->
-    <div v-if="!gameStarted" class="difficulty-selector">
+    <div v-else-if="!gameStarted" class="difficulty-selector">
       <TopBar
         title="消除mzk"
         subtitle="选择难度开始游戏"
@@ -17,7 +28,7 @@
             @click="startGameWithDifficulty(diff.level)"
           >
             <div class="difficulty-icon">
-              <img :src="getImageUrl(diff.icon)" :alt="diff.name" class="difficulty-icon-img">
+              <img :src="getImageUrl(`images/${diff.icon}.webp`)" :alt="diff.name" class="difficulty-icon-img">
             </div>
             <h3>{{ diff.name }}</h3>
             <p class="difficulty-desc">{{ diff.description }}</p>
@@ -42,26 +53,33 @@
       </TopBar>
 
       <div class="game-info">
-        <div class="info-item">
-          <span class="label">剩余：</span>
-          <span class="value">{{ remainingCount }}</span>
+        <div class="info-row">
+          <div class="info-item">
+            <span class="label">剩余：</span>
+            <span class="value">{{ remainingCount }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">洗牌：</span>
+            <span class="value">{{ shufflesLeft }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">清空：</span>
+            <span class="value">{{ clearsLeft }}</span>
+          </div>
         </div>
-        <div class="info-item">
-          <span class="label">洗牌：</span>
-          <span class="value">{{ shufflesLeft }}</span>
+        <div class="btn-row">
+          <button class="btn btn-small shuffle-btn" @click="shuffle" :disabled="shufflesLeft <= 0">
+            <img :src="shuffleIconUrl" alt="洗牌" class="shuffle-icon">
+            洗牌
+          </button>
+          <button class="btn btn-small clear-btn" @click="clearSlots" :disabled="clearsLeft <= 0">
+            <img :src="clearIconUrl" alt="清空" class="clear-icon">
+            清空
+          </button>
+          <button class="btn btn-small restart-btn" @click="replay">
+            重新开始
+          </button>
         </div>
-        <div class="info-item">
-          <span class="label">清空：</span>
-          <span class="value">{{ clearsLeft }}</span>
-        </div>
-        <button class="btn btn-small shuffle-btn" @click="shuffle" :disabled="shufflesLeft <= 0">
-          <img :src="shuffleIconUrl" alt="洗牌" class="shuffle-icon">
-          洗牌
-        </button>
-        <button class="btn btn-small clear-btn" @click="clearSlots" :disabled="clearsLeft <= 0">
-          <img :src="clearIconUrl" alt="清空" class="clear-icon">
-          清空
-        </button>
       </div>
 
       <!-- 游乐场 -->
@@ -71,7 +89,10 @@
           :key="character.id"
           v-show="!character.collected"
           class="character-item"
-          :class="{ 'character-touching': character.touching }"
+          :class="{
+            'character-touching': character.touching,
+            'character-blocked': !topOfStack.has(character.id)
+          }"
           :style="{
             left: `${character.x}%`,
             top: `${character.y}%`,
@@ -83,10 +104,9 @@
           @touchend="handleTouchEnd(character)"
         >
           <img
-            :src="getImageUrl(character.name)"
+            :src="getImageUrl(`images/${character.name}.webp`)"
             :alt="character.name"
             class="character-img"
-            loading="lazy"
             decoding="async"
           />
         </div>
@@ -103,7 +123,7 @@
           >
             <img
               v-if="slot"
-              :src="getImageUrl(slot)"
+              :src="getImageUrl(`images/${slot}.webp`)"
               :alt="slot"
               class="slot-img"
               :class="{ removing: removingSlots.includes(index) }"
@@ -146,11 +166,13 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import TopBar from '@/components/TopBar.vue'
 import gameConfig from '@/data/minigame/eliminate-mzk.json'
+import { getImageUrl } from '@/utils/imageHelper'
 
 const router = useRouter()
 
 const ALL_CHARACTERS = gameConfig.characters
 const difficulties = gameConfig.difficulties
+const STACK_DEPTH = 3 // 每个牌堆的层数
 
 const gameStarted = ref(false)
 const selectedDifficulty = ref(null)
@@ -161,10 +183,49 @@ const clearsLeft = ref(0)
 const gameWon = ref(false)
 const gameLost = ref(false)
 const removingSlots = ref([])
+const isClearing = ref(false) // 是否正在消除中
+const imagesLoaded = ref(false) // 图片是否加载完成
+const loadingProgress = ref(0) // 加载进度
 
 // 获取图标
-const shuffleIconUrl = '/assets/images/' + encodeURIComponent(gameConfig.icons.shuffle) + '.webp'
-const clearIconUrl = '/assets/images/' + encodeURIComponent(gameConfig.icons.clear) + '.webp'
+const shuffleIconUrl = getImageUrl(`images/${gameConfig.icons.shuffle}.webp`)
+const clearIconUrl = getImageUrl(`images/${gameConfig.icons.clear}.webp`)
+
+// 预加载所有图片
+function preloadImages() {
+  return new Promise((resolve) => {
+    const imagesToLoad = [
+      ...ALL_CHARACTERS.map(char => getImageUrl(`images/${char}.webp`)),
+      ...difficulties.map(diff => getImageUrl(`images/${diff.icon}.webp`)),
+      shuffleIconUrl,
+      clearIconUrl
+    ]
+
+    let loaded = 0
+    const total = imagesToLoad.length
+
+    if (total === 0) {
+      resolve()
+      return
+    }
+
+    imagesToLoad.forEach(src => {
+      const img = new Image()
+      img.onload = img.onerror = () => {
+        loaded++
+        loadingProgress.value = Math.round((loaded / total) * 100)
+        if (loaded === total) {
+          imagesLoaded.value = true
+          resolve()
+        }
+      }
+      img.src = src
+    })
+  })
+}
+
+// 页面加载时预加载图片
+preloadImages()
 
 const currentDifficultyName = computed(() => {
   const diff = difficulties.find(d => d.level === selectedDifficulty.value)
@@ -173,6 +234,20 @@ const currentDifficultyName = computed(() => {
 
 const remainingCount = computed(() => {
   return characterList.value.filter(c => !c.collected).length
+})
+
+// 计算每个牌堆最顶部的牌（可点击）
+const topOfStack = computed(() => {
+  const tops = new Map()
+  characterList.value.forEach(c => {
+    if (!c.collected) {
+      const cur = tops.get(c.stackId)
+      if (!cur || c.zIndex > cur.zIndex) {
+        tops.set(c.stackId, c)
+      }
+    }
+  })
+  return new Set([...tops.values()].map(c => c.id))
 })
 
 function startGameWithDifficulty(level) {
@@ -227,48 +302,64 @@ function generateCharacterList(total) {
 
 function assignPositions(list) {
   const result = []
-
-  // 根据数量计算网格布局
   const count = list.length
-  const cols = Math.ceil(Math.sqrt(count * 1.5)) // 列数稍多一些，让布局更宽
-  const rows = Math.ceil(count / cols)
+  const stackCount = Math.ceil(count / STACK_DEPTH)
 
-  // 计算每个格子的大小
-  const cellWidth = 80 / cols // 使用80%的宽度
-  const cellHeight = 80 / rows // 使用80%的高度
-  const startX = 10 // 左边距10%
-  const startY = 10 // 上边距10%
+  // 根据设备类型和数量计算最佳网格
+  const isMobile = window.innerWidth < 768
+  const playgroundWidth = isMobile ? window.innerWidth : Math.min(window.innerWidth * 0.8, 1200)
 
-  // 为每个角色分配一个网格位置
-  const positions = []
-  for (let i = 0; i < count; i++) {
+  // 计算合适的列数
+  const itemSize = isMobile ? 100 : 120
+  const minSpacing = isMobile ? 20 : 30
+  const maxCols = Math.floor(playgroundWidth / (itemSize + minSpacing))
+
+  // 根据牌堆数量计算列数
+  let cols = Math.min(maxCols, Math.ceil(Math.sqrt(stackCount * 1.2)))
+  cols = Math.max(3, Math.min(cols, isMobile ? 4 : 6))
+
+  const rows = Math.ceil(stackCount / cols)
+
+  // 计算实际可用空间（留出边距）
+  const marginX = 8
+  const marginY = 8
+  const usableWidth = 100 - marginX * 2
+  const usableHeight = 100 - marginY * 2
+
+  const cellWidth = usableWidth / cols
+  const cellHeight = usableHeight / rows
+
+  // 生成牌堆位置
+  const stackPositions = []
+  for (let i = 0; i < stackCount; i++) {
     const col = i % cols
     const row = Math.floor(i / cols)
 
-    // 在格子中心位置添加随机偏移（不超过格子大小的30%）
-    const randomOffsetX = (Math.random() - 0.5) * cellWidth * 0.3
-    const randomOffsetY = (Math.random() - 0.5) * cellHeight * 0.3
+    const x = marginX + col * cellWidth + cellWidth / 2
+    const y = marginY + row * cellHeight + cellHeight / 2
 
-    const x = startX + col * cellWidth + cellWidth / 2 + randomOffsetX
-    const y = startY + row * cellHeight + cellHeight / 2 + randomOffsetY
-
-    positions.push({ x, y })
+    stackPositions.push({ x, y })
   }
 
-  // 随机打乱位置分配（但位置本身是有规律的）
-  for (let i = positions.length - 1; i > 0; i--) {
+  // 随机打乱牌堆位置
+  for (let i = stackPositions.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [positions[i], positions[j]] = [positions[j], positions[i]]
+    [stackPositions[i], stackPositions[j]] = [stackPositions[j], stackPositions[i]]
   }
 
-  // 分配给角色
+  // 分配角色到牌堆
   list.forEach((char, index) => {
+    const stackId = Math.floor(index / STACK_DEPTH)
+    const layerIndex = index % STACK_DEPTH
+    const pos = stackPositions[stackId]
+
     result.push({
       ...char,
-      x: positions[index].x,
-      y: positions[index].y,
-      rotation: Math.random() * 360,
-      zIndex: index
+      stackId,
+      x: pos.x + layerIndex * 1.2,
+      y: pos.y + layerIndex * 1.2,
+      rotation: (Math.random() - 0.5) * 10,
+      zIndex: stackId * STACK_DEPTH + layerIndex
     })
   })
 
@@ -280,7 +371,7 @@ function shuffle() {
 
   shufflesLeft.value--
 
-  // 重新分配未收集角色的位置
+  // 重新分配未收集角色的位置和牌堆
   const uncollected = characterList.value.filter(c => !c.collected)
   const reassigned = assignPositions(uncollected)
 
@@ -319,22 +410,26 @@ function clearSlots() {
     }
   })
 
-  // 只为放回的角色重新分配位置
+  // 重新分配所有未收集角色的牌堆和位置
   if (returnedCharacters.length > 0) {
-    const newPositions = assignPositions(returnedCharacters)
+    const allUncollected = characterList.value.filter(c => !c.collected)
+    const newPositions = assignPositions(allUncollected)
 
-    // 更新这些角色的位置
-    newPositions.forEach((newChar, index) => {
-      const originalChar = returnedCharacters[index]
-      originalChar.x = newChar.x
-      originalChar.y = newChar.y
-      originalChar.rotation = newChar.rotation
+    allUncollected.forEach((char, index) => {
+      char.x = newPositions[index].x
+      char.y = newPositions[index].y
+      char.rotation = newPositions[index].rotation
+      char.zIndex = newPositions[index].zIndex
+      char.stackId = newPositions[index].stackId
     })
   }
 }
 
 function collectCharacter(character) {
-  if (character.collected || gameWon.value || gameLost.value) return
+  if (character.collected || gameWon.value || gameLost.value || isClearing.value) return
+
+  // 只允许点击牌堆最顶部的牌
+  if (!topOfStack.value.has(character.id)) return
 
   // 找到第一个空槽位
   const emptySlotIndex = slots.value.findIndex(slot => slot === null)
@@ -353,11 +448,6 @@ function collectCharacter(character) {
 
   // 检查是否有3个相同
   checkAndClear()
-
-  // 检查是否胜利
-  if (remainingCount.value === 0 && slots.value.every(s => s === null)) {
-    gameWon.value = true
-  }
 }
 
 function checkAndClear() {
@@ -379,6 +469,9 @@ function checkAndClear() {
   // 找到数量>=3的角色
   for (const [name, count] of Object.entries(counts)) {
     if (count >= 3) {
+      // 设置消除锁
+      isClearing.value = true
+
       // 标记要移除的槽位（前3个）
       const slotsToRemove = positions[name].slice(0, 3)
       removingSlots.value = slotsToRemove
@@ -411,14 +504,19 @@ function checkAndClear() {
     }
   }
 
+  // 没有可消除的了，解除消除锁
+  isClearing.value = false
+
+  // 检查是否胜利（所有角色都已收集且槽位为空）
+  if (remainingCount.value === 0 && slots.value.every(s => s === null)) {
+    gameWon.value = true
+    return
+  }
+
   // 检查是否失败（槽位满了）
   if (slots.value.every(s => s !== null)) {
     gameLost.value = true
   }
-}
-
-function getImageUrl(name) {
-  return `/assets/images/${encodeURIComponent(name)}.webp`
 }
 
 function handleTouchStart(character) {
@@ -546,11 +644,24 @@ function goBack() {
 
 .game-info {
   display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 16px 20px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px;
   background: white;
   border-bottom: 2px solid var(--border-color);
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -603,6 +714,11 @@ function goBack() {
   object-fit: contain;
 }
 
+.restart-btn {
+  display: flex;
+  align-items: center;
+}
+
 .reset-btn {
   padding: 8px 16px;
   background: var(--primary-color);
@@ -624,9 +740,15 @@ function goBack() {
 .playground {
   position: relative;
   flex: 1;
-  min-height: 400px;
+  min-height: 500px;
   background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%);
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .playground {
+    min-height: 400px;
+  }
 }
 
 .character-item {
@@ -635,15 +757,28 @@ function goBack() {
   transition: transform 0.2s;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  touch-action: manipulation;
+  padding: 10px;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .character-touching {
-  transform: translate(-50%, -50%) scale(1.1) !important;
+  transform: translate(-50%, -50%) scale(1.15) !important;
+  z-index: 9999 !important;
+}
+
+.character-blocked {
+  filter: brightness(0.7) saturate(0.5);
+  pointer-events: none;
+  cursor: default;
 }
 
 @media (hover: hover) {
   .character-item:hover {
-    transform: translate(-50%, -50%) scale(1.15) !important;
+    transform: translate(-50%, -50%) scale(1.2) !important;
+    z-index: 9999 !important;
   }
 
   .character-item:active {
@@ -652,11 +787,18 @@ function goBack() {
 }
 
 .character-img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
   pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .character-img {
+    width: 120px;
+    height: 120px;
+  }
 }
 
 /* 收集槽 */
@@ -816,11 +958,6 @@ function goBack() {
     max-width: 300px;
   }
 
-  .character-img {
-    width: 100px;
-    height: 100px;
-  }
-
   .collection-slots {
     gap: 8px;
     padding: 12px;
@@ -838,6 +975,53 @@ function goBack() {
 
   .game-info {
     font-size: 14px;
+    gap: 8px;
   }
+}
+
+/* 加载屏幕 */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #fff 0%, #fff5f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-content h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+  color: var(--text-color);
+}
+
+.progress-bar {
+  width: 200px;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto 16px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.loading-content p {
+  font-size: 18px;
+  color: #666;
+  font-weight: bold;
 }
 </style>

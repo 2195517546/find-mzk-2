@@ -18,8 +18,11 @@
             <button class="btn btn-secondary" @click="goHome">
               返回首页
             </button>
+            <button class="btn btn-restart" @click="restart">
+              重新开始
+            </button>
             <button v-if="hasNextLevel" class="btn btn-primary" @click="nextLevel">
-              下一关 →
+              下一关
             </button>
           </div>
         </div>
@@ -31,6 +34,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { MAX_LEVEL } from '@/stores/game'
 
 const props = defineProps({
   show: {
@@ -51,11 +55,11 @@ const props = defineProps({
   },
   totalLevels: {
     type: Number,
-    default: 10
+    default: MAX_LEVEL
   }
 })
 
-const emit = defineEmits(['close', 'next'])
+const emit = defineEmits(['close', 'next', 'restart'])
 
 const router = useRouter()
 
@@ -72,6 +76,11 @@ const goHome = () => {
 
 const nextLevel = () => {
   emit('next')
+  emit('close')
+}
+
+const restart = () => {
+  emit('restart')
   emit('close')
 }
 </script>
@@ -119,6 +128,7 @@ const nextLevel = () => {
   font-size: 18px;
   margin-bottom: 16px;
   color: var(--text-color);
+  white-space: pre-line;
 }
 
 .level-info {
@@ -142,6 +152,11 @@ const nextLevel = () => {
 
 .btn-secondary {
   background-color: #f0f0f0;
+}
+
+.btn-restart {
+  background-color: #fff3e0;
+  color: #e65100;
 }
 
 /* 动画效果 */

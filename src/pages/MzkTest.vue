@@ -11,7 +11,7 @@
       <div class="intro-body">
         <img
           class="mzk-img"
-          src="/assets/images/开心mzk.webp"
+          :src="getImageUrl('images/开心mzk.webp')"
           alt="开心mzk"
         />
 
@@ -25,7 +25,7 @@
           <h2>🎀 可测出的MZK类型</h2>
           <div class="mzk-list">
             <div v-for="(mzk, name) in testData.mzkTypes" :key="name" class="mzk-item">
-              <img :src="mzk.image" :alt="mzk.name" />
+              <img :src="getImageUrl(mzk.image)" :alt="mzk.name" />
               <span>{{ mzk.name }}</span>
             </div>
           </div>
@@ -65,10 +65,10 @@
         </div>
 
         <div class="test-actions">
-          <button class="btn-secondary" @click="previousQuestion" :disabled="currentQuestionIndex === 0">
+          <button class="btn btn-main" @click="previousQuestion" :disabled="currentQuestionIndex === 0">
             上一题
           </button>
-          <button class="btn-secondary" @click="currentScreen = 'intro'">退出</button>
+          <button class="btn btn-secondary" @click="currentScreen = 'intro'">退出</button>
         </div>
       </div>
     </div>
@@ -88,7 +88,7 @@
         </div>
 
         <div class="result-image">
-          <img :src="result.image" :alt="result.name" />
+          <img :src="getImageUrl(result.image)" :alt="result.name" />
         </div>
 
         <div class="result-description">
@@ -103,25 +103,37 @@
         </div>
 
         <div class="result-actions">
-          <button class="btn-primary" @click="copyLink">分享结果</button>
-          <button class="btn-secondary" @click="startTest">重新测试</button>
+          <button class="btn btn-main" @click="copyLink">分享结果</button>
+          <button class="btn btn-main" @click="startTest">重新测试</button>
         </div>
       </div>
     </div>
+
+    <!-- 复制提示弹窗 -->
+    <ConfirmDialog
+      :show="showCopyAlert"
+      type="alert"
+      title="提示"
+      :message="copyAlertMessage"
+      @confirm="showCopyAlert = false"
+      @cancel="showCopyAlert = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import TopBar from '@/components/TopBar.vue'
 import testData from '@/data/minigame/mzk-test.json'
+import { getImageUrl } from '@/utils/imageHelper'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
-const router = useRouter()
 const currentScreen = ref('intro')
 const currentQuestionIndex = ref(0)
 const answers = ref({})
 const result = ref(null)
+const showCopyAlert = ref(false)
+const copyAlertMessage = ref('')
 
 const mzkCount = computed(() => {
   return Object.keys(testData.mzkTypes).length
@@ -194,9 +206,11 @@ function copyLink() {
   const shareText = `我测出来是${result.value.name}！快来测测你是哪种晓山瑞希：${url}`
 
   navigator.clipboard.writeText(shareText).then(() => {
-    alert('分享内容已复制到剪贴板！')
+    copyAlertMessage.value = '分享内容已复制到剪贴板！'
+    showCopyAlert.value = true
   }).catch(() => {
-    alert('复制失败，请手动复制：' + shareText)
+    copyAlertMessage.value = '复制失败，请手动复制：' + shareText
+    showCopyAlert.value = true
   })
 }
 </script>
@@ -261,10 +275,16 @@ function copyLink() {
   box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
 }
 
-.btn-main:hover {
+.btn-main:hover:not(:disabled) {
   background: #ff1493;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(255, 105, 180, 0.4);
+}
+
+.btn-main:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-secondary {
