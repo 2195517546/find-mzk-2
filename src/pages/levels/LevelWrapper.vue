@@ -96,16 +96,17 @@ const handleLockedAlertConfirm = () => {
   router.push('/')
 }
 
-const handleWin = () => {
+const handleWin = (data) => {
   gameStore.completeLevel(props.levelId)
   if (props.levelId === 2) {
-    try {
-      const hasEgg = localStorage.getItem('find-mzk-2-egg-67') === '1'
-      winMessage.value = hasEgg
-        ? '你成功进入了晓山瑞希！\n🎉 隐藏彩蛋：你发现了67号日期！'
-        : '你成功进入了晓山瑞希！'
-    } catch (_) {
-      winMessage.value = '你成功进入了晓山瑞希！'
+    winMessage.value = data
+      ? '你成功进入了晓山瑞希！\n🎉 隐藏彩蛋：你发现了67号日期！'
+      : '你成功进入了晓山瑞希！'
+  } else if (props.levelId === 3) {
+    if (data?.foundAllMikus) {
+      winMessage.value = '你成功探索了晓山瑞希！\n🎉 隐藏结局：你找到了全部7个miku！'
+    } else {
+      winMessage.value = `你成功探索了晓山瑞希！\n（提示：还有 ${data?.missingCount || 0} 个miku未找到）`
     }
   } else {
     winMessage.value = '你成功找到了晓山瑞希！'

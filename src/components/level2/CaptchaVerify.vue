@@ -36,19 +36,30 @@
             :class="{ done: passedRounds >= n }"
           ></span>
           <span class="gc-grid-label">{{ currentGridSize === 16 ? '4×4' : '3×3' }}</span>
-          <span v-if="showWrongTip" class="gc-wrong-tip">❌ 点错了！进度归零</span>
+          <span v-if="showFailTip" class="gc-fail-tip">❌ 你没有通过人机验证，重新尝试</span>
         </div>
 
         <!-- 网格 -->
         <div class="gc-grid-area">
           <MzkGrid
+            ref="mzkGridRef"
             :key="roundKey"
             :grid-size="currentGridSize"
             :total-to-click="currentGridSize === 16 ? 10 : 6"
             :max-visible="3"
             @complete="onRoundComplete"
             @wrong="onWrong"
+            @skip-fail="onSkipFail"
           />
+        </div>
+
+        <!-- 底部操作栏 -->
+        <div class="gc-footer">
+          <div class="gc-tech-info">
+            <span class="gc-tech-support">由gluglu提供技术支持</span>
+            <span class="gc-skip-hint">如果没有请点击跳过</span>
+          </div>
+          <button class="gc-skip-btn" @click="handleSkip">跳过</button>
         </div>
       </div>
     </div>
@@ -72,6 +83,10 @@ const modalOpen = ref(false)
 const passedRounds = ref(0)
 const roundKey = ref(0)
 const currentGridSize = ref(9)
+const showFailTip = ref(false)
+const mzkGridRef = ref(null)
+
+let failTipTimer = null
 
 function pickGridSize() {
   currentGridSize.value = Math.random() < 0.5 ? 9 : 16
@@ -100,6 +115,46 @@ function onRoundComplete() {
     roundKey.value++
   }
 }
+
+function onWrong() {
+  // 点错了，显示失败提示，进度归零，重新开始
+  showFailTip.value = true
+  passedRounds.value = 0
+  clearTimeout(failTipTimer)
+
+  // 立即重新生成网格
+  pickGridSize()
+  roundKey.value++
+
+  // 2秒后隐藏提示
+  failTipTimer = setTimeout(() => {
+    showFailTip.value = false
+  }, 2000)
+}
+
+function onSkipFail() {
+  // 跳过失败，显示失败提示，进度归零，重新开始
+  showFailTip.value = true
+  passedRounds.value = 0
+  clearTimeout(failTipTimer)
+
+  // 立即重新生成网格
+  pickGridSize()
+  roundKey.value++
+
+  // 2秒后隐藏提示
+  failTipTimer = setTimeout(() => {
+    showFailTip.value = false
+  }, 2000)
+}
+
+function handleSkip() {
+  // 调用 MzkGrid 的跳过方法
+  if (mzkGridRef.value) {
+    mzkGridRef.value.handleSkip()
+  }
+}
+
 </script>
 
 <style scoped>
@@ -250,8 +305,85 @@ function onRoundComplete() {
   margin-left: auto;
 }
 
+.gc-wrong-tip {
+  font-size: 12px;
+  color: #e53935;
+  font-weight: 600;
+  margin-left: 8px;
+  animation: shake 0.4s ease;
+}
+
+.gc-skip-fail-tip {
+  font-size: 12px;
+  color: #e53935;
+  font-weight: 600;
+  margin-left: 8px;
+  animation: shake 0.4s ease;
+}
+
+.gc-fail-tip {
+  font-size: 12px;
+  color: #e53935;
+  font-weight: 600;
+  margin-left: 8px;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  60% { transform: translateX(3px); }
+}
+
 /* 网格区域 */
 .gc-grid-area {
   padding: 14px;
+  position: relative;
+}
+
+/* 底部操作栏 */
+.gc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+
+.gc-tech-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gc-tech-support {
+  font-size: 11px;
+  color: #999;
+}
+
+.gc-skip-hint {
+  font-size: 10px;
+  color: #bbb;
+}
+
+.gc-skip-btn {
+  padding: 6px 16px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.gc-skip-btn:hover {
+  background: #3a7bc8;
+}
+
+.gc-skip-btn:active {
+  transform: scale(0.98);
 }
 </style>

@@ -1,0 +1,91 @@
+[
+  {
+    "id": "card_001",
+    "name": "作曲灵感",
+    "type": "attack",
+    "cost": 1,
+    "damage": 6,
+    "description": "用音乐表达内心",
+    "image": "开心mzk.webp",
+    "rarity": "common"
+  },
+  {
+    "id": "card_002",
+    "name": "电子音符",
+    "type": "attack",
+    "cost": 2,
+    "damage": 10,
+    "description": "强力的电子音乐攻击",
+    "image": "讲话mzk.webp",
+    "rarity": "common"
+  },
+  {
+    "id": "card_003",
+    "name": "夜之旋律",
+    "type": "attack",
+    "cost": 3,
+    "damage": 16,
+    "description": "25时的专属旋律",
+    "image": "怪核mzk.webp",
+    "rarity": "rare"
+  },
+  {
+    "id": "card_004",
+    "name": "耳机护盾",
+    "type": "defense",
+    "cost": 1,
+    "armor": 5,
+    "description": "用耳机隔绝外界",
+    "image": "普通mzk.webp",
+    "rarity": "common"
+  },
+  {
+    "id": "card_005",
+    "name": "隐匿自我",
+    "type": "defense",
+    "cost": 2,
+    "armor": 9,
+    "description": "躲进自己的世界",
+    "image": "打坐mzk.webp",
+    "rarity": "common"
+  },
+  {
+    "id": "card_006",
+    "name": "连线",
+    "type": "skill",
+    "cost": 1,
+    "effect": {
+      "type": "draw",
+      "value": 2
+    },
+    "description": "抽2张牌",
+    "image": "普通ena.webp",
+    "rarity": "common"
+  },
+  {
+    "id": "card_007",
+    "name": "K的鼓励",
+    "type": "skill",
+    "cost": 1,
+    "effect": {
+      "type": "heal",
+      "value": 6
+    },
+    "description": "回复6点生命",
+    "image": "大眼mzk.webp",
+    "rarity": "common"
+  },
+  {
+    "id": "card_008",
+    "name": "真实的自己",
+    "type": "skill",
+    "cost": 2,
+    "effect": {
+      "type": "energy",
+      "value": 2
+    },
+    "description": "本回合能量+2",
+    "image": "吐舌mzk.webp",
+    "rarity": "rare"
+  }
+]

@@ -1,7 +1,7 @@
 <template>
   <div class="level-placeholder">
-    <h3 class="instruction">第6关待实现</h3>
-    <button class="btn test-btn" @click="$emit('win')">测试通关</button>
+    <h3 class="instruction">第6关</h3>
+    <p class="coming-soon">敬请期待</p>
   </div>
 </template>
 
@@ -21,6 +21,10 @@ defineEmits(['win'])
 .instruction {
   font-size: 24px;
   color: var(--primary-color);
-  margin-bottom: 32px;
+  margin-bottom: 16px;
+}
+.coming-soon {
+  font-size: 16px;
+  color: #999;
 }
 </style>

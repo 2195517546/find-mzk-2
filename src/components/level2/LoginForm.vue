@@ -85,6 +85,7 @@ const showHumanVerify = ref(false)    // 显示人机验证条
 const humanVerified = ref(false)      // 人机验证通过
 const showBirthdayVerify = ref(false) // 显示生日验证弹窗
 const birthdayVerified = ref(false)   // 生日验证通过
+const hasFoundEgg = ref(false)        // 是否发现彩蛋
 
 const captchaCanvas = ref(null)
 
@@ -231,16 +232,18 @@ function handleLogin() {
   }
 
   // 生日验证已通过，通关
-  emit('win')
+  emit('win', hasFoundEgg.value)
 }
 
 function onHumanVerified() {
   humanVerified.value = true
 }
 
-function onBirthdayVerified() {
+function onBirthdayVerified(foundEgg) {
   birthdayVerified.value = true
+  hasFoundEgg.value = foundEgg
   showBirthdayVerify.value = false
+  emit('win', foundEgg)
 }
 
 onMounted(() => {

@@ -151,6 +151,7 @@ const selectedMonthIdx = ref(null)
 const selectedDay = ref(null)
 const errorMsg = ref('')
 const expanded = ref({ 1: false, 2: false, 3: false, 4: false, 5: false, 6: false })
+const hasFoundEgg = ref(false) // 本次是否发现彩蛋
 
 const yearEl = ref(null)
 const monthEl = ref(null)
@@ -200,6 +201,7 @@ const dayGroups = [
 function expand(group) {
   expanded.value[group] = true
   if (group === 6) {
+    hasFoundEgg.value = true
     try { localStorage.setItem(EASTER_EGG_KEY, '1') } catch (_) {}
   }
 }
@@ -212,7 +214,7 @@ function handleSubmit() {
   if (selectedMonth.value !== CORRECT_MONTH) { errorMsg.value = '月份不正确'; return }
   if (selectedDay.value === null)            { errorMsg.value = '请选择日期'; return }
   if (selectedDay.value !== CORRECT_DAY)    { errorMsg.value = '日期不正确'; return }
-  emit('verified')
+  emit('verified', hasFoundEgg.value) // 传递是否发现彩蛋
 }
 </script>
 

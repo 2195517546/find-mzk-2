@@ -18,26 +18,26 @@
   {
     "id": 3,
     "name": "探索晓山瑞希",
-    "subtitle": "在空无一人的世界中寻找7个miku",
+    "subtitle": "在空无一人的世界中寻找到晓山瑞希",
     "type": "maze",
     "difficulty": 2,
-    "description": "迷宫探索，找到所有隐藏的miku"
+    "description": "迷宫探索"
   },
   {
     "id": 4,
-    "name": "第4关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "搜索晓山瑞希",
+    "subtitle": "在论坛中搜索找到晓山瑞希",
+    "type": "forum",
+    "difficulty": 2,
+    "description": "论坛搜索"
   },
   {
     "id": 5,
-    "name": "第5关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "对决晓山瑞希",
+    "subtitle": "战胜内心的负面情绪",
+    "type": "card-battle",
+    "difficulty": 3,
+    "description": "卡牌战斗"
   },
   {
     "id": 6,

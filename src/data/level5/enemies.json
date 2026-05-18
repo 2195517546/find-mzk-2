@@ -1,0 +1,59 @@
+{
+  "boss": {
+    "id": "boss_001",
+    "name": "叹息之墙",
+    "type": "boss",
+    "maxHp": 80,
+    "image": "killa晓山瑞希.webp",
+    "filter": "brightness(0.6) saturate(0.5) hue-rotate(270deg)",
+    "description": "内心深处的绝望之墙"
+  },
+  "minions": [
+    {
+      "id": "minion_001",
+      "name": "自我怀疑",
+      "type": "doubt",
+      "maxHp": 20,
+      "image": "惊吓mzk.webp",
+      "filter": "brightness(0.6) saturate(0.5)",
+      "pattern": [
+        { "turn": 1, "action": "attack", "value": 4 },
+        { "turn": 2, "action": "attack", "value": 6 },
+        { "turn": 3, "action": "attack", "value": 4 }
+      ],
+      "loop": true,
+      "description": "快速连续攻击"
+    },
+    {
+      "id": "minion_002",
+      "name": "逃避一切",
+      "type": "escape",
+      "maxHp": 25,
+      "image": "生气mzk.webp",
+      "filter": "brightness(0.6) saturate(0.5)",
+      "pattern": [
+        { "turn": 1, "action": "attack", "value": 5 },
+        { "turn": 2, "action": "defend", "value": 4 },
+        { "turn": 3, "action": "attack", "value": 7 }
+      ],
+      "loop": true,
+      "description": "攻防结合"
+    },
+    {
+      "id": "minion_003",
+      "name": "焦虑阴影",
+      "type": "anxiety",
+      "maxHp": 18,
+      "image": "怪核mzk.webp",
+      "filter": "brightness(0.6) saturate(0.5) hue-rotate(330deg)",
+      "pattern": [
+        { "turn": 1, "action": "buff", "value": 0, "description": "蓄力中..." },
+        { "turn": 2, "action": "buff", "value": 0, "description": "蓄力中..." },
+        { "turn": 3, "action": "buff_all", "value": 3, "description": "强化所有敌人！" }
+      ],
+      "loop": true,
+      "description": "每3回合强化所有敌人",
+      "warning": true
+    }
+  ]
+}

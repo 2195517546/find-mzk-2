@@ -133,15 +133,15 @@ function handleImageClick(event) {
   if (direction) {
     move(direction)
   } else {
-    // 点击中心区域，检查是否有miku
+    // 点击中心区域，检查是否有miku或到达终点
     checkMiku()
+    checkEnd()
   }
 }
 
 function onTransitionEnd() {
   isTransitioning.value = false
   checkMiku()
-  checkEnd()
 }
 
 function checkMiku() {
@@ -153,19 +153,10 @@ function checkMiku() {
 
 function checkEnd() {
   if (currentNodeId.value === mazeData.endNode) {
-    if (foundMikus.size >= mazeData.totalMikus) {
-      // 找到全部7个miku
-      endHintMessage.value = '🎉 恭喜通关！你找到了全部7个miku！'
-      showEndHint.value = true
-      clearTimeout(endHintTimer)
-      endHintTimer = setTimeout(() => {
-        showEndHint.value = false
-        emit('win')
-      }, 2000)
-    } else {
-      // 直接通关
-      emit('win')
-    }
+    // 直接触发通关，传递是否找到所有miku的信息
+    const foundAllMikus = foundMikus.size >= mazeData.totalMikus
+    const missingCount = mazeData.totalMikus - foundMikus.size
+    emit('win', { foundAllMikus, missingCount })
   }
 }
 

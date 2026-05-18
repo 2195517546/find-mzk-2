@@ -1,0 +1,23 @@
+{
+  "post_id": "post_001",
+  "content": "今天早上遇见了好多晓山瑞希，好可爱！\n${好多晓山瑞希.webp}\n每一个都超级可爱的说~",
+  "comments": [
+    {
+      "comment_id": "c1",
+      "author": "Enana",
+      "text": "确实很可爱呢！",
+      "replies": [
+        {
+          "author": "尤珞理希",
+          "text": "对吧对吧！"
+        }
+      ]
+    },
+    {
+      "comment_id": "c2",
+      "author": "Kanade",
+      "text": "瑞希真的很可爱。",
+      "replies": []
+    }
+  ]
+}

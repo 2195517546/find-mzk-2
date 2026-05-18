@@ -1,9 +1,13 @@
 <template>
-  <LoginForm @win="$emit('win')" />
+  <LoginForm @win="handleWin" />
 </template>
 
 <script setup>
 import LoginForm from '@/components/level2/LoginForm.vue'
 
-defineEmits(['win'])
+const emit = defineEmits(['win'])
+
+function handleWin(hasFoundEgg) {
+  emit('win', hasFoundEgg)
+}
 </script>

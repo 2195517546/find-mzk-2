@@ -1,0 +1,18 @@
+[
+  {
+    "post_id": "post_001",
+    "title": "今天早上遇见了好多晓山瑞希，好可爱",
+    "tags": ["日常", "可爱", "晓山瑞希"],
+    "author": "尤珞理希",
+    "release_time": "2026-05-06 10:00:00",
+    "pinned": true
+  },
+  {
+    "post_id": "post_002",
+    "title": "我是晓山瑞希。",
+    "tags": ["晓山瑞希", "Akiyama"],
+    "author": "Mizuki",
+    "release_time": "2026-05-01 23:59:59",
+    "pinned": false
+  }
+]

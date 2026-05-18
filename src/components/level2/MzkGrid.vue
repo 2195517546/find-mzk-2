@@ -1,18 +1,5 @@
 <template>
   <div class="mzk-grid-wrap">
-    <!-- 指令 + 进度条 -->
-    <div class="grid-instruction">
-      <span>点击所有「mzk」</span>
-      <span class="grid-counter">{{ clickedCount }} / {{ totalToClick }}</span>
-    </div>
-    <!-- 进度条 -->
-    <div class="grid-progress-track">
-      <div
-        class="grid-progress-fill"
-        :style="{ width: (clickedCount / totalToClick * 100) + '%' }"
-      ></div>
-    </div>
-
     <!-- 网格 -->
     <div
       class="grid"
@@ -51,7 +38,7 @@ const props = defineProps({
   maxVisible:   { type: Number, default: 3 },
 })
 
-const emit = defineEmits(['complete', 'wrong'])
+const emit = defineEmits(['complete', 'wrong', 'skip-fail']) // 添加 skip-fail 事件
 
 const MZK_IMAGES = [
   'emumzk', '侦探mzk', '倒立mzk', '倒立走mzk', '偷听mzk', '右立mzk',
@@ -116,18 +103,28 @@ function onCellClick(cell) {
     cell.type = 'empty'
     cell.src = ''
     clickedCount.value++
-    justReset.value = false
 
-    if (clickedCount.value >= props.totalToClick) {
-      const t = setTimeout(() => emit('complete'), 300)
-      timers.push(t)
-      return
-    }
+    // 检查是否还有 mzk 在界面上
+    checkCompletion()
 
+    // 点击后补充一个随机人物（可能是 mzk，也可能是其他角色）
     if (pendingSpawns > 0) {
       pendingSpawns--
       const delay = 800 + Math.random() * 1200
-      const t = setTimeout(spawnMzk, delay)
+      const t = setTimeout(() => {
+        spawnRandomCharacter(cell)
+        // 补充后再次检查是否完成
+        checkCompletion()
+      }, delay)
+      timers.push(t)
+    } else {
+      // 即使没有待生成的 mzk，也要补充一个其他角色
+      const delay = 800 + Math.random() * 1200
+      const t = setTimeout(() => {
+        spawnOtherCharacter(cell)
+        // 补充后再次检查是否完成
+        checkCompletion()
+      }, delay)
       timers.push(t)
     }
   } else {
@@ -137,6 +134,46 @@ function onCellClick(cell) {
     timers.push(t)
     emit('wrong')
   }
+}
+
+function checkCompletion() {
+  const remainingMzk = cells.value.filter(c => c.type === 'mzk').length
+
+  if (remainingMzk === 0 && pendingSpawns <= 0) {
+    const t = setTimeout(() => emit('complete'), 500)
+    timers.push(t)
+  }
+}
+
+function handleSkip() {
+  // 检查是否还有待刷新的 mzk
+  if (pendingSpawns > 0) {
+    // 还有未刷新的 mzk，跳过失败
+    emit('skip-fail')
+  } else {
+    // 没有待刷新的 mzk，跳过成功
+    emit('complete')
+  }
+}
+
+// 暴露方法给父组件调用
+defineExpose({
+  handleSkip
+})
+
+function spawnRandomCharacter(targetCell) {
+  targetCell.type = 'mzk'
+  targetCell.src = getImageUrl(`images/${randomFrom(MZK_IMAGES)}.webp`)
+  targetCell.spawning = true
+  setTimeout(() => { targetCell.spawning = false }, 400)
+}
+
+function spawnOtherCharacter(targetCell) {
+  // 只生成其他角色
+  targetCell.type = 'other'
+  targetCell.src = getImageUrl(`images/${randomFrom(OTHER_IMAGES)}.webp`)
+  targetCell.spawning = true
+  setTimeout(() => { targetCell.spawning = false }, 400)
 }
 
 function spawnMzk() {
@@ -162,41 +199,7 @@ onUnmounted(() => { timers.forEach(clearTimeout) })
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
   width: 100%;
-}
-
-.grid-instruction {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 320px;
-  font-size: 14px;
-  color: #555;
-  font-weight: 600;
-}
-
-.grid-counter {
-  color: #7c4dba;
-  font-weight: 700;
-}
-
-/* 进度条 */
-.grid-progress-track {
-  width: 100%;
-  max-width: 320px;
-  height: 6px;
-  background: #e8e0f5;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.grid-progress-fill {
-  height: 100%;
-  background: #7c4dba;
-  border-radius: 3px;
-  transition: width 0.3s ease;
 }
 
 .grid {
