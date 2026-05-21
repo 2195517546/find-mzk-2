@@ -1,7 +1,7 @@
 <template>
   <div class="stage-two">
     <div class="instruction">
-      <h3 class="pink-text">复活<del class="struck-text">死去</del>的mzk</h3>
+      <h3>复活<del class="struck-text">死去</del>的mzk</h3>
     </div>
 
     <div class="ritual-area">
@@ -107,8 +107,8 @@
           </g>
         </svg>
 
-        <!-- 中心提示 -->
-        <div v-if="allSlotsFilled" class="center-prompt" @click="startRitual">
+        <!-- 中心提示（电脑端） -->
+        <div v-if="allSlotsFilled" class="center-prompt desktop-only" @click="startRitual">
           <span class="center-text">开始仪式</span>
         </div>
 
@@ -135,6 +135,13 @@
       </div>
     </div>
 
+    <!-- 开始仪式按钮（移动端） -->
+    <div v-if="allSlotsFilled" class="ritual-start-wrapper mobile-only">
+      <div class="ritual-start-btn" @click="startRitual">
+        开始仪式
+      </div>
+    </div>
+
     <!-- 物品栏 -->
     <div class="items-container">
       <div class="items-title">拖动祭品</div>
@@ -155,7 +162,7 @@
     <!-- 成功弹窗 -->
     <Teleport to="body">
       <Transition name="dialog">
-        <div v-if="showSuccessDialog" class="dialog-overlay" @click="showSuccessDialog = false">
+        <div v-if="showSuccessDialog" class="dialog-overlay">
           <div class="dialog-content" @click.stop>
             <h3 class="pink-text">你救赎了晓山瑞希</h3>
             <img :src="eavesdropMzkUrl" alt="偷听mzk" class="eavesdrop-mzk" :class="{ 'glitching': isGlitching }">
@@ -170,7 +177,7 @@
     <!-- 失败弹窗 -->
     <Teleport to="body">
       <Transition name="dialog">
-        <div v-if="showFailDialog" class="dialog-overlay" @click="showFailDialog = false">
+        <div v-if="showFailDialog" class="dialog-overlay">
           <div class="dialog-content" @click.stop>
             <h3>物品不正确</h3>
             <p class="message">请重新选择正确的祭品</p>
@@ -204,7 +211,13 @@ const correctItems = [
 
 // 干扰物品
 const distractorItems = [
-  { name: '鲨鱼之牌', url: 'images/item/鲨鱼mzk卡面.png', isCorrect: false }
+  { name: '鲨鱼之牌', url: 'images/item/鲨鱼mzk卡面.png', isCorrect: false },
+  { name: '愿望之罐', url: 'images/item/彩色罐子.webp', isCorrect: false },
+  { name: '幻晶之心', url: 'images/item/心愿水晶.webp', isCorrect: false },
+  { name: '发饰之忆', url: 'images/item/晓山瑞希发卡.webp', isCorrect: false },
+  { name: '虚空水晶', url: 'images/item/水晶.webp', isCorrect: false },
+  { name: '贪婪金币', url: 'images/item/金币.webp', isCorrect: false },
+  { name: '遮阳之帽', url: 'images/item/鸭舌帽.webp', isCorrect: false }
 ]
 
 const slots = ref([
@@ -246,15 +259,31 @@ const allSlotsFilled = computed(() => {
 })
 
 const loadItems = () => {
-  const allItems = [
-    ...correctItems.map(item => ({ ...item, url: getImageUrl(item.url) })),
-    ...distractorItems.map(item => ({ ...item, url: getImageUrl(item.url) }))
-  ]
+  const correctList = correctItems.map(item => ({ ...item, url: getImageUrl(item.url) }))
+  const distractorList = distractorItems.map(item => ({ ...item, url: getImageUrl(item.url) }))
 
-  // 随机打乱
-  for (let i = allItems.length - 1; i > 0; i--) {
+  // 分别随机打乱正确物品和错误物品
+  for (let i = correctList.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[allItems[i], allItems[j]] = [allItems[j], allItems[i]]
+    ;[correctList[i], correctList[j]] = [correctList[j], correctList[i]]
+  }
+
+  for (let i = distractorList.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[distractorList[i], distractorList[j]] = [distractorList[j], distractorList[i]]
+  }
+
+  // 交替插入，使正确物品更分散
+  const allItems = []
+  const maxLength = Math.max(correctList.length, distractorList.length)
+
+  for (let i = 0; i < maxLength; i++) {
+    if (i < correctList.length) {
+      allItems.push(correctList[i])
+    }
+    if (i < distractorList.length) {
+      allItems.push(distractorList[i])
+    }
   }
 
   availableItems.value = allItems
@@ -371,6 +400,17 @@ onMounted(() => {
 .instruction h3 {
   font-size: 24px;
   margin: 0;
+  color: #8b0000;
+  animation: text-flicker 2s ease-in-out infinite;
+}
+
+@keyframes text-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .struck-text {
@@ -408,6 +448,56 @@ onMounted(() => {
   position: relative;
   width: 400px;
   height: 400px;
+  transform-origin: center;
+}
+
+@media (max-width: 1200px) {
+  .pentagram-container {
+    width: 80vw;
+    height: 80vw;
+    max-width: 80vh;
+    max-height: 80vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .pentagram-container {
+    width: 95vw;
+    height: 95vw;
+    max-width: 95vh;
+    max-height: 95vh;
+    transform: scale(1.5);
+    transform-origin: center;
+  }
+
+  .ritual-area {
+    padding: 0;
+    margin: 0;
+  }
+
+  /* 插槽直接缩小尺寸 */
+  .slot {
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+  }
+
+  .slot:hover {
+    transform: none;
+  }
+
+  .slot-number {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    top: -6px;
+    left: -6px;
+  }
+
+  .slot-item {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .pentagram-svg {
@@ -473,15 +563,6 @@ onMounted(() => {
   50% {
     transform: scale(1.2);
     opacity: 0.6;
-  }
-}
-
-@media (max-width: 768px) {
-  .pentagram-container {
-    width: 90vw;
-    height: 90vw;
-    max-width: 350px;
-    max-height: 350px;
   }
 }
 
@@ -569,6 +650,53 @@ onMounted(() => {
   letter-spacing: 2px;
 }
 
+.ritual-start-wrapper {
+  display: none;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .ritual-start-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .ritual-start-btn {
+    cursor: pointer;
+    padding: 12px 32px;
+    color: #cc3333;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(204, 51, 51, 0.8);
+    letter-spacing: 4px;
+    animation: pulse-btn 2s ease-in-out infinite;
+    user-select: none;
+  }
+
+  @keyframes pulse-btn {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+}
+
 .items-container {
   padding: 16px;
   max-height: 30%;
@@ -577,9 +705,10 @@ onMounted(() => {
 .items-title {
   text-align: center;
   font-size: 16px;
-  color: var(--text-color);
+  color: var(--primary-color);
   margin-bottom: 12px;
   font-weight: bold;
+  opacity: 0.6;
 }
 
 .items-grid {
@@ -624,10 +753,10 @@ onMounted(() => {
 
 .item-tooltip {
   position: absolute;
-  bottom: -20px;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -636,7 +765,8 @@ onMounted(() => {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
-  z-index: 100;
+  z-index: 1000;
+  margin-bottom: 4px;
 }
 
 .item:hover .item-tooltip {
@@ -664,6 +794,10 @@ onMounted(() => {
   max-width: 400px;
   width: 90%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
 .dialog-content h3 {
@@ -681,7 +815,6 @@ onMounted(() => {
   width: 150px;
   height: 150px;
   object-fit: contain;
-  margin: 16px 0;
 }
 
 .eavesdrop-mzk.glitching {
@@ -725,13 +858,23 @@ onMounted(() => {
   }
 
   .slot {
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
+    border-width: 1px;
+  }
+
+  .slot-number {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    top: -6px;
+    left: -6px;
+    border-width: 1px;
   }
 
   .slot-item {
-    width: 45px;
-    height: 45px;
+    width: 24px;
+    height: 24px;
   }
 
   .mzk-image {

@@ -31,7 +31,7 @@
 
     <Teleport to="body">
       <Transition name="dialog">
-        <div v-if="showCorrectDialog" class="dialog-overlay" @click="showCorrectDialog = false">
+        <div v-if="showCorrectDialog" class="dialog-overlay">
           <div class="dialog-content" @click.stop>
             <h3 class="pink-text">找到了</h3>
             <p class="message">你找到了killamzk</p>
@@ -109,7 +109,6 @@ const allImages = [
   'images/普通toya.webp',
   'images/普通tsukasa.webp',
   'images/普通白miku.webp',
-  'images/公安.webp',
   'images/killa晓山瑞希.webp'
 ]
 

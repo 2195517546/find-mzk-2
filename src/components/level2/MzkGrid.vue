@@ -108,11 +108,12 @@ function onCellClick(cell) {
     checkCompletion()
 
     // 点击后补充一个随机人物（可能是 mzk，也可能是其他角色）
+    // 在其他空格子里随机生成，而不是在当前格子
     if (pendingSpawns > 0) {
       pendingSpawns--
       const delay = 800 + Math.random() * 1200
       const t = setTimeout(() => {
-        spawnRandomCharacter(cell)
+        spawnRandomCharacter()
         // 补充后再次检查是否完成
         checkCompletion()
       }, delay)
@@ -121,7 +122,7 @@ function onCellClick(cell) {
       // 即使没有待生成的 mzk，也要补充一个其他角色
       const delay = 800 + Math.random() * 1200
       const t = setTimeout(() => {
-        spawnOtherCharacter(cell)
+        spawnOtherCharacter()
         // 补充后再次检查是否完成
         checkCompletion()
       }, delay)
@@ -162,18 +163,27 @@ defineExpose({
 })
 
 function spawnRandomCharacter(targetCell) {
-  targetCell.type = 'mzk'
-  targetCell.src = getImageUrl(`images/${randomFrom(MZK_IMAGES)}.webp`)
-  targetCell.spawning = true
-  setTimeout(() => { targetCell.spawning = false }, 400)
+  // 不使用 targetCell，而是随机选择一个空格子
+  const emptyCells = cells.value.filter(c => c.type === 'empty')
+  if (emptyCells.length === 0) return
+
+  const target = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+  target.type = 'mzk'
+  target.src = getImageUrl(`images/${randomFrom(MZK_IMAGES)}.webp`)
+  target.spawning = true
+  setTimeout(() => { target.spawning = false }, 400)
 }
 
-function spawnOtherCharacter(targetCell) {
-  // 只生成其他角色
-  targetCell.type = 'other'
-  targetCell.src = getImageUrl(`images/${randomFrom(OTHER_IMAGES)}.webp`)
-  targetCell.spawning = true
-  setTimeout(() => { targetCell.spawning = false }, 400)
+function spawnOtherCharacter() {
+  // 只生成其他角色，在随机空格子里生成
+  const emptyCells = cells.value.filter(c => c.type === 'empty')
+  if (emptyCells.length === 0) return
+
+  const target = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+  target.type = 'other'
+  target.src = getImageUrl(`images/${randomFrom(OTHER_IMAGES)}.webp`)
+  target.spawning = true
+  setTimeout(() => { target.spawning = false }, 400)
 }
 
 function spawnMzk() {

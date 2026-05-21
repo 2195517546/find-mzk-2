@@ -58,6 +58,7 @@
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { MAX_LEVEL } from '@/stores/game'
+import tipsData from '@/data/tips.json'
 
 const props = defineProps({
   show: {
@@ -95,11 +96,9 @@ const hasNextLevel = computed(() => props.currentLevel < props.totalLevels)
 const tips = ref([])
 const tip = ref('')
 
-const loadTips = async () => {
+const loadTips = () => {
   try {
-    const response = await fetch('/tips.json')
-    const data = await response.json()
-    tips.value = data
+    tips.value = tipsData
     // 加载完成后立即生成一个tip
     if (props.show && props.currentLevel !== 5) {
       generateTip()
