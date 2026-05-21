@@ -1,7 +1,7 @@
 <template>
   <div class="stage-two">
     <div class="instruction">
-      <h3 class="pink-text">复活死去的mzk</h3>
+      <h3 class="pink-text">复活<del class="struck-text">死去</del>的mzk</h3>
     </div>
 
     <div class="ritual-area">
@@ -12,32 +12,99 @@
 
       <!-- 倒五芒星 -->
       <div class="pentagram-container">
-        <svg class="pentagram" viewBox="0 0 300 300">
-          <!-- 倒五芒星 -->
-          <polygon
-            points="150,30 250,240 50,240"
-            fill="none"
-            stroke="#cc3333"
-            stroke-width="2"
-          />
-          <polygon
-            points="150,30 250,240"
-            fill="none"
-            stroke="#cc3333"
-            stroke-width="2"
-          />
-          <polygon
-            points="250,240 50,240"
-            fill="none"
-            stroke="#cc3333"
-            stroke-width="2"
-          />
-          <polygon
-            points="50,240 150,30"
-            fill="none"
-            stroke="#cc3333"
-            stroke-width="2"
-          />
+        <svg class="pentagram-svg" viewBox="0 0 400 400">
+          <!-- 外层大圆 -->
+          <circle cx="200" cy="200" r="190" fill="none" stroke="#cc3333" stroke-width="2" opacity="0.6" />
+
+          <!-- 外层装饰圆（虚线） -->
+          <circle cx="200" cy="200" r="185" fill="none" stroke="#cc3333" stroke-width="1" stroke-dasharray="8,12" opacity="0.4" />
+
+          <!-- 中层圆 -->
+          <circle cx="200" cy="200" r="150" fill="none" stroke="#cc3333" stroke-width="1" stroke-dasharray="10,5" opacity="0.3" />
+
+          <!-- 内层圆 -->
+          <circle cx="200" cy="200" r="100" fill="none" stroke="#cc3333" stroke-width="1" stroke-dasharray="5,10" opacity="0.2" />
+
+          <!-- 旋转的装饰花纹 -->
+          <g class="rotating-decoration" opacity="0.3">
+            <!-- 外圈花纹 -->
+            <g fill="none" stroke="#cc3333" stroke-width="1">
+              <path d="M 200,10 L 200,30" />
+              <path d="M 200,370 L 200,390" />
+              <path d="M 10,200 L 30,200" />
+              <path d="M 370,200 L 390,200" />
+
+              <!-- 斜向线条 -->
+              <path d="M 65.7,65.7 L 78.8,78.8" />
+              <path d="M 334.3,65.7 L 321.2,78.8" />
+              <path d="M 65.7,334.3 L 78.8,321.2" />
+              <path d="M 334.3,334.3 L 321.2,321.2" />
+            </g>
+
+            <!-- 外圈三角形装饰 -->
+            <polygon
+              points="200,15 210,35 190,35"
+              fill="none"
+              stroke="#cc3333"
+              stroke-width="1"
+            />
+            <polygon
+              points="200,385 210,365 190,365"
+              fill="none"
+              stroke="#cc3333"
+              stroke-width="1"
+            />
+            <polygon
+              points="15,200 35,210 35,190"
+              fill="none"
+              stroke="#cc3333"
+              stroke-width="1"
+            />
+            <polygon
+              points="385,200 365,210 365,190"
+              fill="none"
+              stroke="#cc3333"
+              stroke-width="1"
+            />
+          </g>
+
+          <!-- 反向旋转的符文环 -->
+          <g class="rotating-runes" opacity="0.25">
+            <text x="200" y="30" text-anchor="middle" fill="#cc3333" font-size="12" font-family="serif">✧</text>
+            <text x="340" y="120" text-anchor="middle" fill="#cc3333" font-size="12" font-family="serif">✦</text>
+            <text x="340" y="280" text-anchor="middle" fill="#cc3333" font-size="12" font-family="serif">✧</text>
+            <text x="60" y="280" text-anchor="middle" fill="#cc3333" font-size="12" font-family="serif">✦</text>
+            <text x="60" y="120" text-anchor="middle" fill="#cc3333" font-size="12" font-family="serif">✧</text>
+          </g>
+
+          <!-- 静止层：第一层倒五芒星（物品槽位对应） -->
+          <g stroke="#cc3333" fill="none" stroke-width="3" opacity="0.8">
+            <!-- P1 -> P4 -> P2 -> P5 -> P3 -> P1 -->
+            <line x1="200" y1="350" x2="288" y2="80" />
+            <line x1="288" y1="80" x2="57" y2="246" />
+            <line x1="57" y1="246" x2="343" y2="246" />
+            <line x1="343" y1="246" x2="112" y2="80" />
+            <line x1="112" y1="80" x2="200" y2="350" />
+          </g>
+
+          <!-- 转动层：第二层倒五芒星（装饰用，会旋转） -->
+          <g stroke="#cc3333" fill="none" stroke-width="2" opacity="0.4" class="rotating-pentagram">
+            <line x1="200" y1="350" x2="288" y2="80" />
+            <line x1="288" y1="80" x2="57" y2="246" />
+            <line x1="57" y1="246" x2="343" y2="246" />
+            <line x1="343" y1="246" x2="112" y2="80" />
+            <line x1="112" y1="80" x2="200" y2="350" />
+          </g>
+
+          <!-- 中心星形装饰 -->
+          <g class="center-star" opacity="0.3">
+            <polygon
+              points="200,180 205,195 220,195 208,205 212,220 200,210 188,220 192,205 180,195 195,195"
+              fill="#cc3333"
+              stroke="#cc3333"
+              stroke-width="1"
+            />
+          </g>
         </svg>
 
         <!-- 中心提示 -->
@@ -56,15 +123,22 @@
           @drop="handleDrop(index, $event)"
         >
           <span class="slot-number">{{ slot.level }}</span>
-          <img v-if="slot.item" :src="slot.item.url" :alt="slot.item.name" class="slot-item">
+          <div
+            v-if="slot.item"
+            class="slot-item-wrapper"
+            draggable="true"
+            @dragstart="handleSlotDragStart(index, $event)"
+          >
+            <img :src="slot.item.url" :alt="slot.item.name" class="slot-item">
+          </div>
         </div>
       </div>
     </div>
 
     <!-- 物品栏 -->
     <div class="items-container">
-      <div class="items-title">选择祭品</div>
-      <div class="items-grid">
+      <div class="items-title">拖动祭品</div>
+      <div class="items-grid" @dragover.prevent @drop="handleDropToItems">
         <div
           v-for="(item, index) in availableItems"
           :key="index"
@@ -116,29 +190,21 @@ import { useRouter } from 'vue-router'
 import { getImageUrl } from '@/utils/imageHelper'
 import { useGameStore } from '@/stores/game'
 
-const emit = defineEmits(['win'])
-
 const router = useRouter()
 const gameStore = useGameStore()
 
 // 正确的物品配置
 const correctItems = [
-  { level: 1, name: '真实之影', url: 'images/普通mzk.webp', isCorrect: true },
-  { level: 2, name: '登录之印', url: 'images/nightcord_logo.webp', isCorrect: true },
-  { level: 3, name: '论坛纹章', url: 'images/晓山瑞希发饰.webp', isCorrect: true },
-  { level: 4, name: '七分之一的Miku', url: 'images/miku娃娃.webp', isCorrect: true },
-  { level: 5, name: '弑逆之牌', url: 'images/killa晓山瑞希卡面.webp', isCorrect: true }
+  { level: 1, name: '真实之影', url: 'images/item/普通mzk.webp', isCorrect: true },
+  { level: 2, name: '登录之印', url: 'images/item/nightcord_logo.webp', isCorrect: true },
+  { level: 3, name: '论坛纹章', url: 'images/item/晓山瑞希发饰.webp', isCorrect: true },
+  { level: 4, name: '七分之一的Miku', url: 'images/item/miku娃娃.webp', isCorrect: true },
+  { level: 5, name: '弑逆之牌', url: 'images/item/killa晓山瑞希卡面.webp', isCorrect: true }
 ]
 
 // 干扰物品
 const distractorItems = [
-  { name: '鲨鱼之牌', url: 'images/鲨鱼mzk卡面.png', isCorrect: false },
-  { name: '普通mzk', url: 'images/普通mzk.webp', isCorrect: false },
-  { name: '开心mzk', url: 'images/开心mzk.webp', isCorrect: false },
-  { name: '生气mzk', url: 'images/生气mzk.webp', isCorrect: false },
-  { name: '惊吓mzk', url: 'images/惊吓mzk.webp', isCorrect: false },
-  { name: '难过mzk', url: 'images/难过mzk.webp', isCorrect: false },
-  { name: '哭泣mzk', url: 'images/哭泣mzk.webp', isCorrect: false }
+  { name: '鲨鱼之牌', url: 'images/item/鲨鱼mzk卡面.png', isCorrect: false }
 ]
 
 const slots = ref([
@@ -151,38 +217,41 @@ const slots = ref([
 
 const availableItems = ref([])
 const draggedItemIndex = ref(null)
+const draggedSlotIndex = ref(null) // 新增：从插槽拖动的索引
 const showSuccessDialog = ref(false)
 const showFailDialog = ref(false)
 const isGlitching = ref(false)
 
 const meditatingMzkUrl = getImageUrl('images/打坐mzk.webp')
 const eavesdropMzkUrl = getImageUrl('images/偷听mzk.webp')
-const killaMzkUrl = getImageUrl('images/killa晓山瑞希.webp')
 
 // 获取放置区域的样式位置
 const getSlotStyle = (index) => {
+  // 倒五芒星的5个顶点在圆上的位置（基于400x400容器，圆心200,200，半径150）
+  // 5个等距点，每隔72度，角度：90°, 162°, 234°, 306°, 18°
+  // P1(200,350) P2(57,246) P3(112,80) P4(288,80) P5(343,246)
+  // 转换成百分比（x/400*100, y/400*100）
   const positions = [
-    { top: '0%', left: '50%', transform: 'translate(-50%, -50%)' }, // 顶部
-    { top: '50%', right: '0%', transform: 'translate(50%, -50%)' }, // 右侧
-    { bottom: '0%', left: '50%', transform: 'translate(-50%, 50%)' }, // 底部
-    { top: '50%', left: '0%', transform: 'translate(-50%, -50%)' }, // 左侧
-    { bottom: '10%', left: '10%' } // 底部偏左
+    { bottom: '12.5%', left: '50%', transform: 'translate(-50%, 50%)' },  // P1(200,350) - 第1关
+    { bottom: '38.5%', left: '14.3%', transform: 'translate(-50%, 50%)' }, // P2(57,246) - 第2关
+    { top: '20%', left: '28%', transform: 'translate(-50%, -50%)' },       // P3(112,80) - 第3关
+    { top: '20%', left: '72%', transform: 'translate(-50%, -50%)' },       // P4(288,80) - 第4关
+    { bottom: '38.5%', left: '85.7%', transform: 'translate(-50%, 50%)' }  // P5(343,246) - 第5关
   ]
   return positions[index] || {}
 }
 
 const allSlotsFilled = computed(() => {
   return slots.value.every(slot => slot.item !== null)
-}
+})
 
 const loadItems = () => {
-  // 合并所有物品并打乱顺序
   const allItems = [
     ...correctItems.map(item => ({ ...item, url: getImageUrl(item.url) })),
     ...distractorItems.map(item => ({ ...item, url: getImageUrl(item.url) }))
   ]
 
-  // Fisher-Yates 洗牌算法
+  // 随机打乱
   for (let i = allItems.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[allItems[i], allItems[j]] = [allItems[j], allItems[i]]
@@ -193,30 +262,60 @@ const loadItems = () => {
 
 const handleDragStart = (index, event) => {
   draggedItemIndex.value = index
+  draggedSlotIndex.value = null
+  event.dataTransfer.effectAllowed = 'move'
+}
+
+const handleSlotDragStart = (slotIndex, event) => {
+  draggedSlotIndex.value = slotIndex
+  draggedItemIndex.value = null
   event.dataTransfer.effectAllowed = 'move'
 }
 
 const handleDrop = (slotIndex, event) => {
-  if (draggedItemIndex.value === null) return
+  // 如果从物品栏拖动到插槽
+  if (draggedItemIndex.value !== null && draggedSlotIndex.value === null) {
+    const item = availableItems.value[draggedItemIndex.value]
 
-  const item = availableItems.value[draggedItemIndex.value]
+    if (slots.value[slotIndex].item) {
+      return
+    }
 
-  // 检查该位置是否已放置物品
-  if (slots.value[slotIndex].item) {
-    return
+    slots.value[slotIndex].item = item
+    availableItems.value.splice(draggedItemIndex.value, 1)
+  }
+  // 如果从插槽拖动到另一个插槽
+  else if (draggedSlotIndex.value !== null) {
+    if (draggedSlotIndex.value === slotIndex) {
+      return
+    }
+
+    const sourceItem = slots.value[draggedSlotIndex.value].item
+    const targetItem = slots.value[slotIndex].item
+
+    slots.value[draggedSlotIndex.value].item = targetItem
+    slots.value[slotIndex].item = sourceItem
   }
 
-  // 放置物品
-  slots.value[slotIndex].item = item
+  draggedItemIndex.value = null
+  draggedSlotIndex.value = null
+}
 
-  // 从可用物品中移除
-  availableItems.value.splice(draggedItemIndex.value, 1)
+const handleDropToItems = () => {
+  // 如果从插槽拖动物品到物品栏，将物品放回物品栏
+  if (draggedSlotIndex.value !== null) {
+    const item = slots.value[draggedSlotIndex.value].item
+    if (item) {
+      slots.value[draggedSlotIndex.value].item = null
+      availableItems.value.push(item)
+    }
+  }
 
   draggedItemIndex.value = null
+  draggedSlotIndex.value = null
 }
 
 const startRitual = () => {
-  // 验证所有物品是否正确
   const isAllCorrect = slots.value.every((slot, index) => {
     if (!slot.item) return false
     return slot.item.level === slot.level && slot.item.isCorrect
@@ -224,7 +323,6 @@ const startRitual = () => {
 
   if (isAllCorrect) {
     showSuccessDialog.value = true
-    // 开始闪烁效果
     setTimeout(() => {
       isGlitching.value = true
     }, 1000)
@@ -236,23 +334,17 @@ const startRitual = () => {
 const handleWin = () => {
   showSuccessDialog.value = false
 
-  // 标记规则破坏第二条
   gameStore.breakRule2()
-
-  // 保存进度
   gameStore.completeLevel(6)
 
-  // 跳转到首页
   router.push('/')
 }
 
 const handleRetry = () => {
   showFailDialog.value = false
-  // 清空所有放置的物品
   slots.value.forEach(slot => {
     slot.item = null
   })
-  // 重新加载物品
   loadItems()
 }
 
@@ -279,6 +371,12 @@ onMounted(() => {
 .instruction h3 {
   font-size: 24px;
   margin: 0;
+}
+
+.struck-text {
+  text-decoration: line-through;
+  text-decoration-color: #cc3333;
+  text-decoration-thickness: 2px;
 }
 
 .ritual-area {
@@ -308,17 +406,34 @@ onMounted(() => {
 
 .pentagram-container {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
 }
 
-.pentagram {
+.pentagram-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  animation: rotate 60s linear infinite;
 }
 
-@keyframes rotate {
+.rotating-decoration {
+  transform-origin: 200px 200px;
+  animation: rotate-decoration 60s linear infinite;
+}
+
+.rotating-runes {
+  transform-origin: 200px 200px;
+  animation: rotate-runes 40s linear infinite reverse;
+}
+
+.rotating-pentagram {
+  transform-origin: 200px 200px;
+  animation: rotate-pentagram 30s linear infinite;
+}
+
+@keyframes rotate-decoration {
   from {
     transform: rotate(0deg);
   }
@@ -327,11 +442,54 @@ onMounted(() => {
   }
 }
 
+@keyframes rotate-runes {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes rotate-pentagram {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.center-star {
+  transform-origin: 200px 200px;
+  animation: pulse-star 3s ease-in-out infinite;
+}
+
+@keyframes pulse-star {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 768px) {
+  .pentagram-container {
+    width: 90vw;
+    height: 90vw;
+    max-width: 350px;
+    max-height: 350px;
+  }
+}
+
 .slot {
   position: absolute;
   width: 80px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
   border: 2px solid var(--primary-color);
   border-radius: 8px;
   display: flex;
@@ -369,6 +527,16 @@ onMounted(() => {
   width: 60px;
   height: 60px;
   object-fit: contain;
+  pointer-events: none;
+}
+
+.slot-item-wrapper {
+  cursor: grab;
+  pointer-events: auto;
+}
+
+.slot-item-wrapper:active {
+  cursor: grabbing;
 }
 
 .center-prompt {
@@ -376,34 +544,32 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 16px 32px;
-  background: var(--primary-color);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
   cursor: pointer;
   z-index: 20;
   animation: pulse 2s ease-in-out infinite;
+  padding: 8px 16px;
 }
 
 @keyframes pulse {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.05);
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
   }
 }
 
 .center-text {
-  color: var(--border-color);
-  font-size: 16px;
+  color: #cc3333;
+  font-size: 20px;
   font-weight: bold;
+  text-shadow: 0 0 10px rgba(204, 51, 51, 0.8);
+  letter-spacing: 2px;
 }
 
 .items-container {
-  background: #fff5f6;
-  border: 2px solid var(--primary-color);
-  border-radius: 12px;
   padding: 16px;
   max-height: 30%;
 }
@@ -418,26 +584,35 @@ onMounted(() => {
 
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 8px;
-  overflow-y: auto;
-  max-height: 150px;
+  justify-content: center;
+  min-height: 60px;
 }
 
 .item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   cursor: grab;
-  padding: 4px;
-  border: 2px solid transparent;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border: 2px solid var(--primary-color);
   border-radius: 8px;
+  padding: 4px;
   transition: all 0.3s;
+  position: relative;
 }
 
 .item:hover {
-  background: white;
-  border-color: var(--primary-color);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(204, 51, 51, 0.3);
+}
+
+.item:active {
+  cursor: grabbing;
 }
 
 .item-image {
@@ -461,6 +636,7 @@ onMounted(() => {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
+  z-index: 100;
 }
 
 .item:hover .item-tooltip {
@@ -564,7 +740,7 @@ onMounted(() => {
   }
 
   .items-grid {
-    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .item-image {

@@ -41,8 +41,16 @@ const router = useRouter()
 const gameStore = useGameStore()
 
 const levels = computed(() => {
-  // 只显示已实现的关卡（type不是pending）
-  return levelsData.filter(level => level.type !== 'pending')
+  // 过滤已实现的关卡
+  const implementedLevels = levelsData.filter(level => level.type !== 'pending')
+
+  // 如果第五关未完成，只显示前五关
+  if (!gameStore.isLevelCompleted(5)) {
+    return implementedLevels.filter(level => level.id <= 5)
+  }
+
+  // 第五关已完成，显示所有已实现的关卡（包括第六关）
+  return implementedLevels
 })
 
 const isLevelUnlocked = (levelId) => {

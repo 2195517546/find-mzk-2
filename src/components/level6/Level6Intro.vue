@@ -1,9 +1,11 @@
 <template>
   <Teleport to="body">
-    <Transition name="flash">
-      <div v-if="show" class="intro-overlay" @click="handleOverlayClick">
-        <div class="flash-text">{{ flashText }}</div>
-        <div class="dialog-container" v-if="showConfirm">
+    <div v-if="show" class="intro-overlay" @click="handleOverlayClick">
+      <Transition name="flash" appear>
+        <div class="flash-text" :key="flashText">{{ flashText }}</div>
+      </Transition>
+      <Transition name="fade" appear>
+        <div v-if="showConfirm" class="dialog-container">
           <div class="dialog-content">
             <p class="question">{{ questionText }}</p>
             <button class="btn" @click="handleConfirm">
@@ -11,8 +13,8 @@
             </button>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </Teleport>
 </template>
 
@@ -31,33 +33,60 @@ const emit = defineEmits(['start'])
 const flashText = ref('')
 const questionText = ref('可能莫?')
 const showConfirm = ref(false)
+let typingInterval = null
 
 watch(() => props.show, (newVal) => {
+  console.log('Level6Intro show changed:', newVal)
   if (newVal) {
+    // 清除之前的计时器
+    if (typingInterval) {
+      clearInterval(typingInterval)
+    }
+
     flashText.value = ''
     showConfirm.value = false
 
+    console.log('Starting text animation')
+
     const text = '6代表恶魔，你却要在这里救赎晓山瑞希'
     let index = 0
-    const interval = setInterval(() => {
-      if (index < text.length) {
-        flashText.value += text[index]
-        index++
-      } else {
-        clearInterval(interval)
-        setTimeout(() => {
-          showConfirm.value = true
-        }, 1500)
-      }
-    }, 100)
+
+    // 延迟一点开始动画，确保DOM已渲染
+    setTimeout(() => {
+      flashText.value = text[0]
+      index = 1
+
+      typingInterval = setInterval(() => {
+        if (index < text.length) {
+          flashText.value += text[index]
+          index++
+          console.log('Current text:', flashText.value)
+        } else {
+          clearInterval(typingInterval)
+          console.log('Text animation complete, showing confirm after delay')
+
+          setTimeout(() => {
+            showConfirm.value = true
+            console.log('Show confirm dialog')
+          }, 1500)
+        }
+      }, 100)
+    }, 300)
+  } else {
+    // 组件隐藏时清除计时器
+    if (typingInterval) {
+      clearInterval(typingInterval)
+      typingInterval = null
+    }
   }
-})
+}, { immediate: true })
 
 const handleOverlayClick = () => {
   // 点击遮罩层不关闭，必须点击确定
 }
 
 const handleConfirm = () => {
+  console.log('Confirm clicked')
   emit('start')
 }
 </script>
@@ -143,6 +172,16 @@ const handleConfirm = () => {
 
 .flash-enter-from,
 .flash-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
