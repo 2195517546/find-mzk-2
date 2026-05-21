@@ -24,9 +24,9 @@
                   <span class="rule-number">1</span>
                   <span class="rule-text">晓山瑞希永远不消逝~~</span>
                 </div>
-                <div class="rule-item">
+                <div class="rule-item" :class="{ 'rule-violated': isRule2Violated }">
                   <span class="rule-number">2</span>
-                  <span class="rule-text">每一种晓山瑞希只存在一个</span>
+                  <span class="rule-text" :class="{ 'rule-text-violated': isRule2Violated }">每一种晓山瑞希只存在一个</span>
                 </div>
                 <div class="rule-item" :class="{ 'rule-violated': isRule3Violated }">
                   <span class="rule-number">3</span>
@@ -53,6 +53,10 @@ const props = defineProps({
     default: false
   },
   isRule3Violated: {
+    type: Boolean,
+    default: false
+  },
+  isRule2Violated: {
     type: Boolean,
     default: false
   }

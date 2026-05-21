@@ -41,11 +41,11 @@
   },
   {
     "id": 6,
-    "name": "第6关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "救赎晓山瑞希",
+    "subtitle": "寻找killamzk，复活晓山瑞希",
+    "type": "ritual",
+    "difficulty": 3,
+    "description": "寻找与复活仪式"
   },
   {
     "id": 7,

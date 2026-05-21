@@ -84,6 +84,7 @@
       v-if="showRulesDialog"
       :show="showRulesDialog"
       :is-rule3-violated="gameStore.ruleBroken"
+      :is-rule2-violated="gameStore.rule2Broken"
       @accept="showRulesDialog = false"
       @close="showRulesDialog = false"
     />

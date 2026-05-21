@@ -40,7 +40,10 @@ import levelsData from '@/data/levels.json'
 const router = useRouter()
 const gameStore = useGameStore()
 
-const levels = computed(() => levelsData)
+const levels = computed(() => {
+  // 只显示已实现的关卡（type不是pending）
+  return levelsData.filter(level => level.type !== 'pending')
+})
 
 const isLevelUnlocked = (levelId) => {
   return gameStore.isLevelUnlocked(levelId)

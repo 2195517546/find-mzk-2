@@ -10,6 +10,7 @@ export const useGameStore = defineStore('game', () => {
   const hasAcceptedStorage = ref(false)
   const ruleBroken = ref(false)
   const hasSeenDisclaimer = ref(false)
+  const rule2Broken = ref(false)
 
   // 从 localStorage 加载数据
   const loadFromStorage = () => {
@@ -37,6 +38,10 @@ export const useGameStore = defineStore('game', () => {
           hasSeenDisclaimer.value = true
         }
 
+        if (data.rule2Broken) {
+          rule2Broken.value = true
+        }
+
         hasAcceptedStorage.value = true
       }
     } catch (error) {
@@ -55,6 +60,7 @@ export const useGameStore = defineStore('game', () => {
         completedLevels: completedLevels.value,
         ruleBroken: ruleBroken.value,
         hasSeenDisclaimer: hasSeenDisclaimer.value,
+        rule2Broken: rule2Broken.value,
         lastSaved: new Date().toISOString()
       }
       localStorage.setItem('find-mzk-2-save', JSON.stringify(data))
@@ -78,6 +84,12 @@ export const useGameStore = defineStore('game', () => {
   // 标记已看过免责声明
   const markDisclaimerSeen = () => {
     hasSeenDisclaimer.value = true
+    saveToStorage()
+  }
+
+  // 破坏第二条规则
+  const breakRule2 = () => {
+    rule2Broken.value = true
     saveToStorage()
   }
 
@@ -119,6 +131,7 @@ export const useGameStore = defineStore('game', () => {
     completedLevels.value = []
     ruleBroken.value = false
     hasSeenDisclaimer.value = false
+    rule2Broken.value = false
     saveToStorage()
   }
 
@@ -141,6 +154,7 @@ export const useGameStore = defineStore('game', () => {
     hasAcceptedStorage,
     ruleBroken,
     hasSeenDisclaimer,
+    rule2Broken,
 
     // 计算属性
     hasProgress,
@@ -155,6 +169,7 @@ export const useGameStore = defineStore('game', () => {
     isLevelCompleted,
     isLevelUnlocked,
     resetProgress,
-    markDisclaimerSeen
+    markDisclaimerSeen,
+    breakRule2
   }
 })
