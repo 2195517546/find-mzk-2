@@ -33,6 +33,9 @@
               <span class="separator">·</span>
               <span>{{ levelName }}</span>
             </div>
+            <div v-if="tip" class="tip-box">
+              <p class="tip-text">{{ tip }}</p>
+            </div>
           </div>
           <div class="dialog-footer">
             <button class="btn btn-secondary" @click="goHome">
@@ -52,7 +55,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { MAX_LEVEL } from '@/stores/game'
 
@@ -88,6 +91,43 @@ const emit = defineEmits(['close', 'next', 'restart'])
 const router = useRouter()
 
 const hasNextLevel = computed(() => props.currentLevel < props.totalLevels)
+
+const tips = ref([])
+const tip = ref('')
+
+const loadTips = async () => {
+  try {
+    const response = await fetch('/tips.json')
+    const data = await response.json()
+    tips.value = data
+    // 加载完成后立即生成一个tip
+    if (props.show && props.currentLevel !== 5) {
+      generateTip()
+    }
+  } catch (error) {
+    console.error('加载tips失败:', error)
+  }
+}
+
+const getRandomTip = () => {
+  if (tips.value.length === 0) return ''
+  const randomIndex = Math.floor(Math.random() * tips.value.length)
+  return tips.value[randomIndex]
+}
+
+const generateTip = () => {
+  tip.value = getRandomTip()
+}
+
+onMounted(() => {
+  loadTips()
+})
+
+watch(() => props.show, (newVal) => {
+  if (newVal && props.currentLevel !== 5 && tips.value.length > 0) {
+    generateTip()
+  }
+})
 
 const handleOverlayClick = () => {
   emit('close')
@@ -158,6 +198,22 @@ const restart = () => {
 .level-info {
   font-size: 14px;
   color: #666;
+  margin-bottom: 12px;
+}
+
+.tip-box {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-top: 16px;
+}
+
+.tip-text {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .separator {

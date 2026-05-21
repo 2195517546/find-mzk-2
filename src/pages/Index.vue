@@ -13,6 +13,7 @@
           alt="倒立走mzk"
           class="logo"
           :class="{ 'logo-broken': gameStore.ruleBroken }"
+          @click="showRulesDialog = true"
         >
       </div>
 
@@ -67,6 +68,24 @@
       v-if="showStorageDialog"
       @accept="handleAcceptStorage"
       @reject="handleRejectStorage"
+    />
+
+    <!-- 免责声明弹窗 -->
+    <DisclaimerDialog
+      v-if="showDisclaimerDialog"
+      :show="showDisclaimerDialog"
+      :is-rule3-violated="gameStore.ruleBroken"
+      @accept="handleAcceptDisclaimer"
+      @close="showDisclaimerDialog = false"
+    />
+
+    <!-- 规则弹窗 -->
+    <DisclaimerDialog
+      v-if="showRulesDialog"
+      :show="showRulesDialog"
+      :is-rule3-violated="gameStore.ruleBroken"
+      @accept="showRulesDialog = false"
+      @close="showRulesDialog = false"
     />
 
     <!-- 小游戏选择弹窗 -->
@@ -132,6 +151,7 @@ import { getImageUrl } from '@/utils/imageHelper'
 import Footer from '@/components/Footer.vue'
 import LevelSelector from '@/components/LevelSelector.vue'
 import StorageDialog from '@/components/StorageDialog.vue'
+import DisclaimerDialog from '@/components/DisclaimerDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
@@ -139,6 +159,8 @@ const gameStore = useGameStore()
 
 const showLevelSelector = ref(false)
 const showStorageDialog = ref(false)
+const showDisclaimerDialog = ref(false)
+const showRulesDialog = ref(false)
 const showMiniGameDialog = ref(false)
 const showNewGameConfirm = ref(false)
 
@@ -193,6 +215,15 @@ const handleCancelNewGame = () => {
 const handleAcceptStorage = () => {
   gameStore.acceptStorage()
   showStorageDialog.value = false
+  // 显示免责声明
+  if (!gameStore.hasSeenDisclaimer) {
+    showDisclaimerDialog.value = true
+  }
+}
+
+const handleAcceptDisclaimer = () => {
+  gameStore.markDisclaimerSeen()
+  showDisclaimerDialog.value = false
 }
 
 const handleRejectStorage = () => {
