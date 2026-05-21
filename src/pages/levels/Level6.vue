@@ -72,7 +72,7 @@ const handleWin = () => {
   // 标记规则破坏第二条
   gameStore.breakRule2()
 
-  // 保存进度
+  // 保存进度（completeLevel 内部会处理规则恢复）
   gameStore.completeLevel(6)
 
   // 显示通关弹窗

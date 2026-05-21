@@ -104,6 +104,11 @@ export const useGameStore = defineStore('game', () => {
       ruleBroken.value = true
     }
 
+    // 第六关通关恢复规则破坏状态（救赎成功）
+    if (levelId === 6) {
+      ruleBroken.value = false
+    }
+
     // 更新当前关卡为下一关，但不超过最大关卡数
     if (levelId >= currentLevel.value && levelId < MAX_LEVEL) {
       currentLevel.value = levelId + 1
