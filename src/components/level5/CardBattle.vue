@@ -1,5 +1,10 @@
 <template>
   <div class="card-battle" :style="{ backgroundImage: `url(${bgImageUrl})` }">
+    <!-- 低血量红色边框警告 -->
+    <div
+      class="low-hp-vignette"
+      :class="{ active: isLowHp, flash: lowHpFlash }"
+    ></div>
     <!-- 玩家区域（左侧） -->
     <div class="player-side">
       <!-- 玩家角色 -->
@@ -28,6 +33,7 @@
         <div class="energy-orb" v-for="i in maxEnergy" :key="i" :class="{ active: i <= playerEnergy }">
           ⚡
         </div>
+        <div v-if="showBonusEnergy > 0" class="energy-bonus">+{{ showBonusEnergy }}</div>
       </div>
 
       <!-- 手机端控制面板（右上角） -->
@@ -37,7 +43,7 @@
           🛡️ {{ playerArmor }}
         </div>
         <div class="mobile-energy-display">
-          ⚡ {{ playerEnergy }}/{{ maxEnergy }}
+          ⚡ {{ playerEnergy }}/{{ maxEnergy }}<span v-if="showBonusEnergy > 0" class="energy-bonus-mobile"> +{{ showBonusEnergy }}</span>
         </div>
 
         <!-- 第二行：血条和结束回合 -->
@@ -53,7 +59,56 @@
 
     <!-- 敌人区域（右侧） -->
     <div class="enemies-side">
-      <!-- Boss在最右边 -->
+      <!-- 小怪槽位（左边，固定2个位置） -->
+      <div class="minions-container">
+        <div
+          v-for="minion in minions"
+          :key="minion.id"
+          class="enemy-unit minion-unit"
+          :class="{ 'warning-unit': minion.type === 'anxiety', 'drop-target': isDropTarget(minion), 'minion-spawning': minion.spawning }"
+          @click="selectTarget(minion)"
+          ref="minionRefs"
+        >
+          <!-- 护甲显示在上方 -->
+          <div v-if="minion.armor > 0" class="armor-display">
+            🛡️ {{ minion.armor }}
+          </div>
+
+          <!-- 行动意图在图片上方 -->
+          <div v-if="getMinionNextAction(minion)" class="enemy-intent-float">
+            <span v-if="getMinionNextAction(minion).action === 'attack'" class="intent-emoji">
+              ⚔️
+            </span>
+            <span v-else-if="getMinionNextAction(minion).action === 'defend'" class="intent-emoji">
+              🛡️
+            </span>
+            <span v-else-if="getMinionNextAction(minion).action === 'buff'" class="intent-emoji">
+              ⏳
+            </span>
+            <span v-else-if="getMinionNextAction(minion).action === 'buff_all'" class="intent-emoji warning">
+              ⚠️
+            </span>
+          </div>
+
+          <img
+            :src="getEnemyImageUrl(minion)"
+            :alt="minion.name"
+            class="enemy-image"
+            :style="{ filter: minion.filter }"
+            :class="{ 'enemy-attacking': minion.isAttacking }"
+          />
+
+          <!-- 生命值在下方 -->
+          <div class="enemy-hp-bar">
+            <div class="hp-fill" :style="{ width: (minion.hp / minion.maxHp) * 100 + '%' }"></div>
+            <div class="hp-text">{{ minion.hp }}/{{ minion.maxHp }}</div>
+          </div>
+
+          <div class="enemy-name">{{ minion.name }}</div>
+        </div>
+      </div>
+
+      <!-- Boss在最右边（固定位置） -->
       <div v-if="boss" class="enemy-unit boss-unit" :class="{ 'drop-target': isDropTarget(boss) }" @click="selectTarget(boss)" ref="bossRef">
         <!-- 护甲显示在上方 -->
         <div v-if="boss.armor > 0" class="armor-display">
@@ -61,8 +116,25 @@
         </div>
 
         <!-- 行动意图在图片上方 -->
-        <div v-if="boss.status === 'confused'" class="enemy-intent-float">
-          <span class="intent-emoji">❓</span>
+        <div class="enemy-intent-float">
+          <!-- 飞走的旧意图 -->
+          <span
+            v-if="bossIntentLeaving"
+            class="intent-emoji intent-leaving"
+            :key="'leave-' + bossIntentLeaving"
+          >{{ bossIntentLeaving }}</span>
+          <!-- 当前意图 -->
+          <span
+            v-if="bossIntentEmoji && !bossIntentEntering"
+            class="intent-emoji"
+            :key="'idle-' + bossIntentEmoji"
+          >{{ bossIntentEmoji }}</span>
+          <!-- 浮现的新意图 -->
+          <span
+            v-if="bossIntentEntering"
+            class="intent-emoji intent-entering"
+            :key="'enter-' + bossIntentEntering"
+          >{{ bossIntentEntering }}</span>
         </div>
 
         <img
@@ -80,53 +152,6 @@
         </div>
 
         <div class="enemy-name">{{ boss.name }}</div>
-      </div>
-
-      <!-- 小怪在中间和左边 -->
-      <div
-        v-for="minion in minions"
-        :key="minion.id"
-        class="enemy-unit minion-unit"
-        :class="{ 'warning-unit': minion.type === 'anxiety', 'drop-target': isDropTarget(minion) }"
-        @click="selectTarget(minion)"
-        ref="minionRefs"
-      >
-        <!-- 护甲显示在上方 -->
-        <div v-if="minion.armor > 0" class="armor-display">
-          🛡️ {{ minion.armor }}
-        </div>
-
-        <!-- 行动意图在图片上方 -->
-        <div v-if="getMinionNextAction(minion)" class="enemy-intent-float">
-          <span v-if="getMinionNextAction(minion).action === 'attack'" class="intent-emoji">
-            ⚔️
-          </span>
-          <span v-else-if="getMinionNextAction(minion).action === 'defend'" class="intent-emoji">
-            🛡️
-          </span>
-          <span v-else-if="getMinionNextAction(minion).action === 'buff'" class="intent-emoji">
-            ⏳
-          </span>
-          <span v-else-if="getMinionNextAction(minion).action === 'buff_all'" class="intent-emoji warning">
-            ⚠️
-          </span>
-        </div>
-
-        <img
-          :src="getEnemyImageUrl(minion)"
-          :alt="minion.name"
-          class="enemy-image"
-          :style="{ filter: minion.filter }"
-          :class="{ 'enemy-attacking': minion.isAttacking }"
-        />
-
-        <!-- 生命值在下方 -->
-        <div class="enemy-hp-bar">
-          <div class="hp-fill" :style="{ width: (minion.hp / minion.maxHp) * 100 + '%' }"></div>
-          <div class="hp-text">{{ minion.hp }}/{{ minion.maxHp }}</div>
-        </div>
-
-        <div class="enemy-name">{{ minion.name }}</div>
       </div>
     </div>
 
@@ -184,6 +209,56 @@
       </div>
     </Transition>
 
+    <!-- Boss召唤文字 -->
+    <Transition name="summon-text">
+      <div v-if="showSummonText" class="summon-text-overlay">
+        <div class="summon-text">召唤喽啰...</div>
+      </div>
+    </Transition>
+
+    <!-- 战斗开始文字 -->
+    <Transition name="summon-text">
+      <div v-if="showEncounterText" class="summon-text-overlay">
+        <div class="encounter-text">你遭遇killamzk了！</div>
+      </div>
+    </Transition>
+
+    <!-- 焦虑阴影蓄力完毕文字 -->
+    <Transition name="buff-text">
+      <div v-if="showBuffText" class="buff-text-overlay">
+        <div class="buff-text">蓄力完毕，敌人增加伤害</div>
+      </div>
+    </Transition>
+
+    <!-- 敌人状态信息 -->
+    <Transition name="enemy-status">
+      <div v-if="showEnemyStatusFlag" class="enemy-status-overlay" @click="showEnemyStatusFlag = false">
+        <div class="enemy-status-content">
+          <span class="enemy-status-icon">{{ enemyStatusInfo.icon }}</span>
+          <span class="enemy-status-name">{{ enemyStatusInfo.name }}</span>
+          <span class="enemy-status-text">{{ enemyStatusInfo.status }}</span>
+          <span class="enemy-status-detail">{{ enemyStatusInfo.detail }}</span>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- 碎盾动画 -->
+    <Transition name="shield-break">
+      <div v-if="showShieldBreak" class="shield-break-overlay">
+        <div class="shield-break-container">
+          <!-- 完整盾牌（裂开前） -->
+          <div class="shield-whole">🛡️</div>
+          <!-- 碎片 -->
+          <div class="shield-shard shard-1">◣</div>
+          <div class="shield-shard shard-2">◢</div>
+          <div class="shield-shard shard-3">◤</div>
+          <div class="shield-shard shard-4">◥</div>
+          <!-- 裂缝闪光 -->
+          <div class="shield-crack-flash"></div>
+        </div>
+      </div>
+    </Transition>
+
     <!-- 飞向敌人的卡牌动画 -->
     <div v-if="flyingCard" class="flying-card" :style="{
       left: flyingCard.startX + 'px',
@@ -208,8 +283,8 @@
       <div v-if="showVictory" class="victory-overlay" @click="handleVictory">
         <div class="victory-content" @click.stop>
           <img :src="victoryImageUrl" alt="晓山瑞希" class="victory-image" />
-          <h2 class="victory-title">你找到了真正的晓山瑞希！</h2>
-          <p class="victory-text">点击继续</p>
+          <h2 class="victory-title">你得救了</h2>
+          <p class="victory-warning">你破坏了这个世界的晓山瑞希规则——晓山瑞希之间禁止相互残杀。</p>
         </div>
       </div>
     </Transition>
@@ -219,7 +294,8 @@
       <div v-if="showDefeat" class="defeat-overlay">
         <div class="defeat-content">
           <h2 class="defeat-title">战斗失败</h2>
-          <p class="defeat-text">被负面情绪吞噬了...</p>
+          <p class="defeat-text">你被killa晓山瑞希击败了</p>
+          <p class="defeat-text">并且被他所带来的负面情绪吞噬</p>
           <button class="btn" @click="restartBattle">重新开始</button>
         </div>
       </div>
@@ -247,6 +323,8 @@ const playerMaxHp = ref(50)
 const playerArmor = ref(0)
 const playerEnergy = ref(3)
 const maxEnergy = ref(3)
+const bonusEnergy = ref(0)
+const showBonusEnergy = ref(0)
 const isDamaged = ref(false)
 
 // Boss和小怪
@@ -284,10 +362,24 @@ const armorGainAmount = ref(0)
 const newCards = ref([]) // 新抽的卡牌动画
 const discardingCards = ref([]) // 弃牌动画
 const flyingCard = ref(null) // 飞向敌人的卡牌
+const showSummonText = ref(false) // Boss召唤文字显示
+const showEncounterText = ref(false) // 战斗开始文字显示
+const showBuffText = ref(false) // 焦虑阴影蓄力完毕文字显示
+const showShieldBreak = ref(false) // 碎盾动画
+
+// Boss意图动画状态
+const bossIntentEmoji = ref('❓') // 当前显示的emoji
+const bossIntentLeaving = ref(null) // 正在飞走的emoji
+const bossIntentEntering = ref(null) // 正在浮现的emoji
+const lastBossIntent = ref('confused') // 上一次的意图
 
 const hpPercentage = computed(() => {
   return (playerHp.value / playerMaxHp.value) * 100
 })
+
+// 低血量警告
+const isLowHp = computed(() => playerHp.value <= 20 && playerHp.value > 0)
+const lowHpFlash = ref(false)
 
 function getEnemyImageUrl(enemy) {
   return getImageUrl(`images/${enemy.image}`)
@@ -318,8 +410,14 @@ function initGame() {
     drawCard()
   }
 
-  // Boss第一回合召唤小怪
-  summonMinions(2)
+  // 开局不召唤小怪，Boss处于疑惑状态
+  // 第一回合结束后Boss才会召唤小怪
+
+  // 显示遭遇提示
+  showEncounterText.value = true
+  setTimeout(() => {
+    showEncounterText.value = false
+  }, 1500)
 }
 
 function shuffleDeck() {
@@ -378,11 +476,20 @@ function summonMinions(count) {
       hp: minionData.maxHp,
       armor: 0,
       turn: 1,
-      isAttacking: false
+      isAttacking: false,
+      justSummoned: true, // 标记为刚召唤，本回合不行动
+      spawning: true // 浮现动画标记
     })
   }
 
   minions.value.push(...summoned)
+
+  // 浮现动画结束后移除 spawning 标记
+  setTimeout(() => {
+    minions.value.forEach(m => {
+      m.spawning = false
+    })
+  }, 600)
 }
 
 function canPlayCard(card) {
@@ -572,6 +679,47 @@ function playCard(card, index) {
 
 function selectTarget(enemy) {
   selectedTarget.value = enemy
+
+  if (enemy.id === boss.value?.id) {
+    // Boss
+    const intent = getBossIntent()
+    if (intent === 'attack') {
+      showEnemyStatus('⚔️', enemy.name, '准备攻击', `将造成 8 点伤害`)
+    } else if (intent === 'shield') {
+      showEnemyStatus('🛡️', enemy.name, '准备防御', '将为所有敌人施加护甲')
+    } else if (intent === 'confused') {
+      showEnemyStatus('❓', enemy.name, '正处于疑惑状态', '不会行动')
+    } else if (intent === 'summon') {
+      showEnemyStatus('📢', enemy.name, '刚刚召唤了喽啰', '不会行动')
+    }
+  } else {
+    // 小怪
+    const action = getMinionNextAction(enemy)
+    if (action) {
+      if (action.action === 'attack') {
+        const damage = action.value + buffValue.value
+        showEnemyStatus('⚔️', enemy.name, '准备攻击', `将造成 ${damage} 点伤害`)
+      } else if (action.action === 'defend') {
+        showEnemyStatus('🛡️', enemy.name, '准备防御', `将获得 ${action.value} 点护甲`)
+      } else if (action.action === 'buff') {
+        showEnemyStatus('⏳', enemy.name, '正在蓄力', '蓄力完成后将强化所有敌人')
+      } else if (action.action === 'buff_all') {
+        showEnemyStatus('⚠️', enemy.name, '蓄力完毕', '即将强化所有敌人！')
+      }
+    }
+  }
+}
+
+// 显示敌人状态信息
+const showEnemyStatusFlag = ref(false)
+const enemyStatusInfo = ref({ icon: '', name: '', status: '', detail: '' })
+
+function showEnemyStatus(icon, name, status, detail) {
+  enemyStatusInfo.value = { icon, name, status, detail }
+  showEnemyStatusFlag.value = true
+  setTimeout(() => {
+    showEnemyStatusFlag.value = false
+  }, 1500)
 }
 
 function executeCardEffect(card, index, target) {
@@ -600,6 +748,8 @@ function executeCardEffect(card, index, target) {
       playerHp.value = Math.min(playerMaxHp.value, playerHp.value + card.effect.value)
     } else if (card.effect.type === 'energy') {
       playerEnergy.value += card.effect.value
+    } else if (card.effect.type === 'next_energy') {
+      bonusEnergy.value += card.effect.value
     }
   }
 
@@ -613,9 +763,18 @@ function executeCardEffect(card, index, target) {
 }
 
 function damageEnemy(enemy, damage) {
+  const hadArmor = enemy.armor > 0
   const actualDamage = Math.max(0, damage - enemy.armor)
   enemy.armor = Math.max(0, enemy.armor - damage)
   enemy.hp = Math.max(0, enemy.hp - actualDamage)
+
+  // 护甲被打破时播放碎盾动画
+  if (hadArmor && enemy.armor === 0) {
+    showShieldBreak.value = true
+    setTimeout(() => {
+      showShieldBreak.value = false
+    }, 1000)
+  }
 
   if (enemy.hp === 0) {
     // 移除死亡的敌人
@@ -632,7 +791,9 @@ function damageEnemy(enemy, damage) {
 
 function checkEnemiesDefeated() {
   if (minions.value.length === 0 && boss.value && boss.value.hp > 0) {
+    // 小怪全灭，Boss恢复疑惑，下回合会召唤新小怪
     boss.value.status = 'confused'
+    transitionBossIntent('confused')
   }
 }
 
@@ -673,11 +834,15 @@ function endTurn() {
 
     // 新回合开始
     setTimeout(() => {
-      // 护甲在敌人回合结束后清零
+      // 护甲在敌人回合结束后清零（玩家和所有敌人）
       playerArmor.value = 0
+      if (boss.value) boss.value.armor = 0
+      minions.value.forEach(m => { m.armor = 0 })
 
       currentTurn.value++
-      playerEnergy.value = maxEnergy.value
+      playerEnergy.value = maxEnergy.value + bonusEnergy.value
+      showBonusEnergy.value = bonusEnergy.value > 0 ? bonusEnergy.value : 0
+      bonusEnergy.value = 0
 
       // 抽5张新手牌
       for (let i = 0; i < 5; i++) {
@@ -702,16 +867,56 @@ function enemyTurn() {
   // Boss行动
   if (boss.value && boss.value.hp > 0) {
     if (minions.value.length === 0) {
-      // 召唤小怪
-      summonMinions(2)
-      boss.value.status = 'confused'
+      // 场上没有小怪，Boss只召唤小怪，不做其他动作
+      showSummonText.value = true
+      setTimeout(() => {
+        showSummonText.value = false
+        summonMinions(2)
+        boss.value.status = 'summoning'
+        boss.value.turn = 1 // 重置行动回合，下次从shield开始
+        // 召唤完小怪后，意图切换为shield（玩家看到下一步是防御）
+        transitionBossIntent('shield')
+      }, 800)
+      // 召唤回合直接结束，小怪不行动
+      return
+    } else {
+      // 有小怪时，Boss根据回合执行不同行动
+      const bossActions = ['shield', 'attack', 'attack']
+      const actionIndex = (boss.value.turn - 1) % bossActions.length
+      const action = bossActions[actionIndex]
+
+      if (action === 'shield') {
+        // 给所有小怪加护甲
+        minions.value.forEach(m => {
+          m.armor += 3
+        })
+        // Boss自己也加护甲
+        boss.value.armor += 5
+        boss.value.status = 'active'
+      } else if (action === 'attack') {
+        // Boss攻击玩家
+        boss.value.isAttacking = true
+        setTimeout(() => {
+          boss.value.isAttacking = false
+          damagePlayer(8)
+        }, 300)
+        boss.value.status = 'active'
+      }
+
+      boss.value.turn++
+
+      // 更新下回合意图动画
+      const nextIntent = getBossIntent()
+      transitionBossIntent(nextIntent)
     }
   }
 
-  // 小怪行动
+  // 小怪行动（跳过刚召唤的小怪）
   let bossAttackTriggered = false
 
-  minions.value.forEach((minion, index) => {
+  const actingMinions = minions.value.filter(m => !m.justSummoned)
+
+  actingMinions.forEach((minion, index) => {
     setTimeout(() => {
       const action = getMinionNextAction(minion)
 
@@ -729,34 +934,111 @@ function enemyTurn() {
         // 强化所有敌人
         buffValue.value += action.value
         bossAttackTriggered = true
+        // 全屏提示
+        showBuffText.value = true
+        setTimeout(() => {
+          showBuffText.value = false
+        }, 1200)
       }
 
       minion.turn++
     }, index * 400)
   })
 
-  // 如果触发了强化，Boss同步攻击
-  if (bossAttackTriggered && boss.value && boss.value.hp > 0) {
-    setTimeout(() => {
+  // 回合结束后清除 justSummoned 标记，下回合正常行动
+  setTimeout(() => {
+    minions.value.forEach(m => {
+      m.justSummoned = false
+    })
+  }, actingMinions.length * 400 + 100)
+
+  // 如果焦虑阴影触发了强化，Boss同步攻击
+  setTimeout(() => {
+    if (bossAttackTriggered && boss.value && boss.value.hp > 0) {
       boss.value.isAttacking = true
       setTimeout(() => {
         boss.value.isAttacking = false
         damagePlayer(12)
       }, 300)
-    }, minions.value.length * 400)
+    }
+  }, actingMinions.length * 400)
+}
+
+// 获取Boss下回合意图（用于显示意图图标）
+function getBossIntent() {
+  if (!boss.value || boss.value.hp <= 0) return null
+
+  // 没有小怪时，下回合会召唤
+  if (minions.value.length === 0) {
+    return 'confused'
   }
+
+  // 有小怪时，根据回合判断当前行动
+  const bossActions = ['shield', 'attack', 'attack']
+  const actionIndex = (boss.value.turn - 1) % bossActions.length
+  return bossActions[actionIndex]
+}
+
+// 意图类型 → emoji 映射
+const intentEmojiMap = {
+  confused: '❓',
+  shield: '🛡️',
+  attack: '⚔️',
+  summon: '📢'
+}
+
+// 切换Boss意图并播放动画
+function transitionBossIntent(newIntent) {
+  if (newIntent === lastBossIntent.value) return // 没变化就不播动画
+
+  const oldEmoji = intentEmojiMap[lastBossIntent.value] || '❓'
+  const newEmoji = intentEmojiMap[newIntent] || '❓'
+
+  // 1. 旧emoji飞走
+  bossIntentEmoji.value = null
+  bossIntentLeaving.value = oldEmoji
+
+  // 2. 飞走动画结束后，浮现新emoji
+  setTimeout(() => {
+    bossIntentLeaving.value = null
+    bossIntentEntering.value = newEmoji
+
+    // 3. 浮现动画结束后，切换为静态显示
+    setTimeout(() => {
+      bossIntentEntering.value = null
+      bossIntentEmoji.value = newEmoji
+      lastBossIntent.value = newIntent
+    }, 400)
+  }, 400)
 }
 
 function damagePlayer(damage) {
+  const hadArmor = playerArmor.value > 0
   const actualDamage = Math.max(0, damage - playerArmor.value)
   playerArmor.value = Math.max(0, playerArmor.value - damage)
   playerHp.value = Math.max(0, playerHp.value - actualDamage)
+
+  // 护甲被打破时播放碎盾动画
+  if (hadArmor && playerArmor.value === 0) {
+    showShieldBreak.value = true
+    setTimeout(() => {
+      showShieldBreak.value = false
+    }, 1000)
+  }
 
   // 受伤闪现效果
   isDamaged.value = true
   setTimeout(() => {
     isDamaged.value = false
   }, 200)
+
+  // 低血量时受击闪烁红色边框
+  if (playerHp.value <= 20 && playerHp.value > 0) {
+    lowHpFlash.value = true
+    setTimeout(() => {
+      lowHpFlash.value = false
+    }, 400)
+  }
 }
 
 function handleVictory() {
@@ -768,6 +1050,8 @@ function restartBattle() {
   playerHp.value = 50
   playerArmor.value = 0
   playerEnergy.value = 3
+  bonusEnergy.value = 0
+  showBonusEnergy.value = 0
   isDamaged.value = false
   boss.value = null
   minions.value = []
@@ -794,6 +1078,45 @@ function restartBattle() {
   background-repeat: no-repeat;
   overflow: hidden;
   position: relative;
+}
+
+/* 低血量红色边框警告 */
+.low-hp-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  box-shadow: inset 0 0 60px 20px rgba(255, 0, 0, 0.5);
+}
+
+.low-hp-vignette.active {
+  opacity: 1;
+  animation: low-hp-pulse 2s ease-in-out infinite;
+}
+
+.low-hp-vignette.flash {
+  animation: low-hp-flash 0.4s ease-out;
+}
+
+@keyframes low-hp-pulse {
+  0%, 100% {
+    box-shadow: inset 0 0 60px 20px rgba(255, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: inset 0 0 80px 30px rgba(255, 0, 0, 0.6);
+  }
+}
+
+@keyframes low-hp-flash {
+  0% {
+    box-shadow: inset 0 0 100px 40px rgba(255, 0, 0, 0.9);
+  }
+  100% {
+    box-shadow: inset 0 0 60px 20px rgba(255, 0, 0, 0.4);
+  }
 }
 
 /* 玩家区域（左侧） */
@@ -918,6 +1241,26 @@ function restartBattle() {
   animation: energy-pulse 1.5s ease-in-out infinite;
 }
 
+.energy-bonus {
+  color: #ffd700;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+  animation: bonus-pop 0.4s ease;
+}
+
+.energy-bonus-mobile {
+  color: #ffd700;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+@keyframes bonus-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 @keyframes energy-pulse {
   0%, 100% {
     transform: scale(1);
@@ -935,7 +1278,16 @@ function restartBattle() {
   align-items: center;
   justify-content: flex-end;
   padding: 40px;
-  flex-direction: row-reverse; /* Boss在最右边 */
+  flex-direction: row; /* 小怪在左，Boss在右 */
+}
+
+/* 小怪容器 - 固定占2个槽位宽度 */
+.minions-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  min-width: 440px; /* 2个小怪的固定宽度 */
+  justify-content: flex-end;
 }
 
 .enemy-unit {
@@ -978,6 +1330,26 @@ function restartBattle() {
 .enemy-image {
   object-fit: contain;
   transition: all 0.3s ease;
+}
+
+/* 小怪浮现动画 */
+.minion-spawning {
+  animation: minion-spawn 0.6s ease-out;
+}
+
+@keyframes minion-spawn {
+  0% {
+    transform: scale(0) translateY(30px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15) translateY(-10px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .enemy-image.enemy-attacking {
@@ -1028,6 +1400,45 @@ function restartBattle() {
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
   animation: intent-float 2s ease-in-out infinite;
   display: inline-block;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 旧意图飞走动画 */
+.intent-emoji.intent-leaving {
+  animation: intent-fly-away 0.4s ease-in forwards;
+}
+
+@keyframes intent-fly-away {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(50px) translateY(-60px) scale(0.3) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* 新意图浮现动画 */
+.intent-emoji.intent-entering {
+  animation: intent-appear 0.4s ease-out forwards;
+}
+
+@keyframes intent-appear {
+  0% {
+    transform: translateX(-50%) translateY(20px) scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(-50%) translateY(-5px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .intent-emoji.warning {
@@ -1245,6 +1656,305 @@ function restartBattle() {
 .armor-gain-leave-to {
   opacity: 0;
 }
+
+/* Boss召唤文字 */
+.summon-text-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.summon-text {
+  font-size: 42px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(128, 0, 255, 0.8),
+    0 0 40px rgba(128, 0, 255, 0.5),
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000;
+  letter-spacing: 4px;
+}
+
+.encounter-text {
+  font-size: 42px;
+  font-weight: bold;
+  color: #cc3333;
+  text-shadow:
+    0 0 20px rgba(204, 51, 51, 0.8),
+    0 0 40px rgba(204, 51, 51, 0.5),
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000;
+  letter-spacing: 4px;
+}
+
+.summon-text-enter-active {
+  transition: all 0.4s ease-out;
+}
+
+.summon-text-leave-active {
+  transition: all 0.4s ease-in;
+}
+
+.summon-text-enter-from {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.summon-text-leave-to {
+  opacity: 0;
+  transform: scale(1.2);
+}
+
+/* 焦虑阴影蓄力完毕文字 */
+.buff-text-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  pointer-events: none;
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.buff-text {
+  font-size: 38px;
+  font-weight: bold;
+  color: #ff4444;
+  text-shadow:
+    0 0 20px rgba(255, 0, 0, 0.8),
+    0 0 40px rgba(255, 0, 0, 0.4),
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000;
+  letter-spacing: 3px;
+  animation: buff-text-shake 0.1s ease-in-out infinite;
+}
+
+@keyframes buff-text-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.buff-text-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.buff-text-leave-active {
+  transition: all 0.5s ease-in;
+}
+
+.buff-text-enter-from {
+  opacity: 0;
+  transform: scale(1.5);
+}
+
+.buff-text-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* 伤害预告 */
+/* 敌人状态信息 */
+.enemy-status-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.enemy-status-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 30px 50px;
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
+}
+
+.enemy-status-icon {
+  font-size: 56px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.enemy-status-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.enemy-status-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.enemy-status-detail {
+  font-size: 15px;
+  color: #ccc;
+}
+
+.enemy-status-enter-active {
+  transition: all 0.25s ease-out;
+}
+
+.enemy-status-leave-active {
+  transition: all 0.25s ease-in;
+}
+
+.enemy-status-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.enemy-status-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* 碎盾动画 */
+.shield-break-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.shield-break-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+/* 完整盾牌 - 先显示再碎裂 */
+.shield-whole {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  filter: drop-shadow(0 0 15px rgba(78, 205, 196, 0.8));
+  animation: shield-crack 1s ease forwards;
+}
+
+@keyframes shield-crack {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 15px rgba(78, 205, 196, 0.8));
+  }
+  15% {
+    transform: scale(1.1);
+    opacity: 1;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 1));
+  }
+  30% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 碎片飞散 */
+.shield-shard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 36px;
+  color: #4ECDC4;
+  opacity: 0;
+  text-shadow: 0 0 8px rgba(78, 205, 196, 0.8);
+}
+
+.shard-1 {
+  animation: shard-fly-1 0.7s ease-out 0.2s forwards;
+}
+.shard-2 {
+  animation: shard-fly-2 0.7s ease-out 0.25s forwards;
+}
+.shard-3 {
+  animation: shard-fly-3 0.7s ease-out 0.2s forwards;
+}
+.shard-4 {
+  animation: shard-fly-4 0.7s ease-out 0.25s forwards;
+}
+
+@keyframes shard-fly-1 {
+  0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-120px, 80px) rotate(-45deg) scale(0.3); opacity: 0; }
+}
+@keyframes shard-fly-2 {
+  0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+  100% { transform: translate(80px, 90px) rotate(60deg) scale(0.3); opacity: 0; }
+}
+@keyframes shard-fly-3 {
+  0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-90px, -100px) rotate(-30deg) scale(0.3); opacity: 0; }
+}
+@keyframes shard-fly-4 {
+  0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+  100% { transform: translate(100px, -80px) rotate(50deg) scale(0.3); opacity: 0; }
+}
+
+/* 裂缝闪光 */
+.shield-crack-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(78, 205, 196, 0.4) 40%, transparent 70%);
+  animation: crack-flash 0.4s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+@keyframes crack-flash {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+.shield-break-enter-active {
+  transition: opacity 0.1s ease;
+}
+.shield-break-leave-active {
+  transition: opacity 0.3s ease;
+}
+.shield-break-enter-from,
+.shield-break-leave-to {
+  opacity: 0;
+}
+
 .end-turn-btn {
   padding: 16px 32px;
   font-size: 18px;
@@ -1256,6 +1966,10 @@ function restartBattle() {
   position: absolute;
   bottom: 20px;
   right: 20px;
+}
+
+.mobile-control-panel {
+  display: none;
 }
 
 .end-turn-btn-mobile {
@@ -1334,6 +2048,13 @@ function restartBattle() {
   color: #666;
 }
 
+.victory-warning {
+  font-size: 13px;
+  color: #cc3333;
+  text-decoration: underline;
+  margin-top: 12px;
+}
+
 /* 失败弹窗 */
 .defeat-overlay {
   position: fixed;
@@ -1395,6 +2116,11 @@ function restartBattle() {
   .enemies-side {
     gap: 15px;
     padding: 20px;
+  }
+
+  .minions-container {
+    min-width: 330px;
+    gap: 15px;
   }
 
   .boss-unit .enemy-image {
@@ -1466,7 +2192,7 @@ function restartBattle() {
   /* 敌人区域在中间，横向排列 */
   .enemies-side {
     flex: 1;
-    flex-direction: row-reverse; /* Boss在最右边 */
+    flex-direction: row; /* 小怪在左，Boss在右 */
     justify-content: center;
     align-items: center;
     gap: 12px;
@@ -1577,6 +2303,11 @@ function restartBattle() {
   .minion-unit .enemy-image {
     width: 80px;
     height: 80px;
+  }
+
+  .minions-container {
+    min-width: 180px;
+    gap: 8px;
   }
 
   .enemy-hp-bar {

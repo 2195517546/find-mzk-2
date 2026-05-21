@@ -66,12 +66,12 @@
     "id": "card_007",
     "name": "K的鼓励",
     "type": "skill",
-    "cost": 1,
+    "cost": 0,
     "effect": {
-      "type": "heal",
-      "value": 6
+      "type": "energy",
+      "value": 1
     },
-    "description": "回复6点生命",
+    "description": "本回合能量+1",
     "image": "大眼mzk.webp",
     "rarity": "common"
   },
@@ -81,10 +81,10 @@
     "type": "skill",
     "cost": 2,
     "effect": {
-      "type": "energy",
+      "type": "next_energy",
       "value": 2
     },
-    "description": "本回合能量+2",
+    "description": "下回合能量+2",
     "image": "吐舌mzk.webp",
     "rarity": "rare"
   }

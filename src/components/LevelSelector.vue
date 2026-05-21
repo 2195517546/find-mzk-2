@@ -8,13 +8,17 @@
         class="level-item"
         :class="{
           'locked': !isLevelUnlocked(level.id),
-          'completed': isLevelCompleted(level.id)
+          'completed': isLevelCompleted(level.id),
+          'broken-level': level.id === 5 && gameStore.ruleBroken
         }"
         @click="selectLevel(level)"
       >
-        <div class="level-number">{{ level.id }}</div>
+        <div class="level-number" :class="{ 'broken-number': level.id === 5 && gameStore.ruleBroken }">{{ level.id }}</div>
         <div class="level-details">
-          <div class="level-name">{{ level.name }}</div>
+          <div v-if="level.id === 5 && gameStore.ruleBroken" class="level-name broken-name">
+            <span class="strikethrough">杀戮晓山瑞希</span>
+          </div>
+          <div v-else class="level-name">{{ level.name }}</div>
           <div class="level-subtitle">{{ level.subtitle }}</div>
         </div>
         <div class="level-status">
@@ -179,5 +183,53 @@ const selectLevel = (level) => {
   .level-subtitle {
     font-size: 12px;
   }
+}
+
+/* 第五关规则破坏样式 */
+.broken-level {
+  background-color: #1a0000 !important;
+  border-color: #cc3333 !important;
+}
+
+.broken-level:hover {
+  background-color: #2a0000 !important;
+}
+
+.broken-number {
+  background-color: #cc3333 !important;
+}
+
+.broken-name {
+  color: #cc3333;
+  font-weight: bold;
+}
+
+.strikethrough {
+  position: relative;
+  display: inline-block;
+}
+
+.strikethrough::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: 50%;
+  height: 2px;
+  background: #cc3333;
+  animation: strike-through 0.6s ease forwards;
+}
+
+@keyframes strike-through {
+  0% { width: 0; }
+  100% { width: calc(100% + 8px); }
+}
+
+.broken-level .level-subtitle {
+  color: #993333;
+}
+
+.broken-level .check-icon {
+  color: #cc3333 !important;
 }
 </style>

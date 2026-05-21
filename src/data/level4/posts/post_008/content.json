@@ -1,0 +1,36 @@
+{
+  "post_id": "post_008",
+  "content": "...在深夜里，只有声音陪伴着我。\n\n我不知道该向谁倾诉。\n所以我选择了这里。\n\n如果你也是深夜里醒着的人，\n也许你能理解。\n\n——下一个碎片，在「nightcord」。",
+  "author": {
+    "name": "Mizuki",
+    "avatar": null
+  },
+  "comments": [
+    {
+      "comment_id": "c1",
+      "author": {
+        "name": "鲸落汐海",
+        "avatar": "images/avatars/鲸落汐海.webp"
+      },
+      "text": "深夜看到这个帖子...莫名被触动了",
+      "replies": []
+    },
+    {
+      "comment_id": "c2",
+      "author": {
+        "name": "MortDollis",
+        "avatar": "images/avatars/MortDollis.webp"
+      },
+      "text": "「nightcord」...这是什么？另一个帖子的线索？",
+      "replies": [
+        {
+          "author": {
+            "name": "ENnA",
+            "avatar": "images/avatars/ENnA.webp"
+          },
+          "text": "试试搜索看看？"
+        }
+      ]
+    }
+  ]
+}

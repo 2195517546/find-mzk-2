@@ -1,13 +1,9 @@
 <template>
-  <MazeExplorer @win="handleWin" />
+  <ForumBrowser @win="$emit('win')" />
 </template>
 
 <script setup>
-import MazeExplorer from '@/components/level3/MazeExplorer.vue'
+import ForumBrowser from '@/components/level4/ForumBrowser.vue'
 
-const emit = defineEmits(['win'])
-
-const handleWin = (data) => {
-  emit('win', data)
-}
+defineEmits(['win'])
 </script>

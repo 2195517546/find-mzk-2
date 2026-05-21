@@ -1,0 +1,44 @@
+{
+  "post_id": "post_011",
+  "content": "她的画笔从未停下。\n\n描绘的不是色彩，是心声。\n\n你已经走了很远了。\n谢谢你一直在找我。\n\n——最后一步。\n我在「amia」等你。\n去搜索它吧，你会找到我的。",
+  "author": {
+    "name": "Mizuki",
+    "avatar": null
+  },
+  "comments": [
+    {
+      "comment_id": "c1",
+      "author": {
+        "name": "尤珞理希",
+        "avatar": "images/avatars/尤珞理希.webp"
+      },
+      "text": "amia...！快去搜索！这一定是最后的线索！",
+      "replies": [
+        {
+          "author": {
+            "name": "钉钉十号",
+            "avatar": "images/avatars/钉钉十号.webp"
+          },
+          "text": "冲冲冲！搜索amia！"
+        }
+      ]
+    },
+    {
+      "comment_id": "c2",
+      "author": {
+        "name": "超级无敌松鼠大王",
+        "avatar": "images/avatars/超级无敌松鼠大王.webp"
+      },
+      "text": "大王宣布：这是最终关卡！amia就是答案！",
+      "replies": [
+        {
+          "author": {
+            "name": "五字🐟️",
+            "avatar": "images/avatars/五字🐟️.webp"
+          },
+          "text": "🐟也要去搜索amia！"
+        }
+      ]
+    }
+  ]
+}

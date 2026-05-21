@@ -2,7 +2,27 @@
   <Teleport to="body">
     <Transition name="dialog">
       <div v-if="show" class="dialog-overlay" @click="handleOverlayClick">
-        <div class="dialog-content" @click.stop>
+        <!-- 第五关特殊弹窗 -->
+        <div v-if="variant === 'dark'" class="dialog-content dark-variant" @click.stop>
+          <div class="dialog-header">
+            <h2 class="dark-text">不恭喜通关</h2>
+          </div>
+          <div class="dialog-body">
+            <p class="message dark-text">{{ message }}</p>
+            <div class="level-info dark-text">
+              <span>第{{ currentLevel }}关</span>
+              <span class="separator">·</span>
+              <span>{{ levelName }}</span>
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <button class="btn btn-dark" @click="goHome">
+              返回首页
+            </button>
+          </div>
+        </div>
+        <!-- 普通弹窗 -->
+        <div v-else class="dialog-content" @click.stop>
           <div class="dialog-header">
             <h2 class="pink-text">🎉 恭喜通关！</h2>
           </div>
@@ -56,6 +76,10 @@ const props = defineProps({
   totalLevels: {
     type: Number,
     default: MAX_LEVEL
+  },
+  variant: {
+    type: String,
+    default: 'normal'
   }
 })
 
@@ -196,5 +220,38 @@ const restart = () => {
   .dialog-footer {
     flex-direction: column;
   }
+}
+
+/* 第五关黑暗变体 */
+.dark-variant {
+  background-color: #1a1a1a;
+  border: 3px solid #cc3333;
+}
+
+.dark-text {
+  color: #cc3333 !important;
+}
+
+.dark-variant .dialog-header h2 {
+  font-size: 28px;
+}
+
+.dark-variant .message {
+  color: #cc3333;
+}
+
+.dark-variant .level-info {
+  color: #cc3333;
+}
+
+.btn-dark {
+  background-color: #330000;
+  color: #cc3333;
+  border: 2px solid #cc3333;
+}
+
+.btn-dark:hover {
+  background-color: #cc3333;
+  color: #1a1a1a;
 }
 </style>

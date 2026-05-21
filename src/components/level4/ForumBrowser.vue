@@ -39,6 +39,8 @@
           <h3 class="post-title">{{ post.title }}</h3>
         </div>
         <div class="post-meta">
+          <img v-if="post.author_avatar" :src="getAvatarUrl(post.author_avatar)" class="avatar" :alt="post.author" />
+          <span v-else class="avatar-placeholder" :style="{ backgroundColor: getAvatarColor(post.author) }">{{ post.author.charAt(0) }}</span>
           <span class="post-author">{{ post.author }}</span>
           <span class="post-time">{{ post.release_time }}</span>
         </div>
@@ -57,6 +59,8 @@
           <div class="post-detail">
             <h2 class="detail-title">{{ selectedPostMeta?.title }}</h2>
             <div class="detail-meta">
+              <img v-if="selectedPostMeta?.author_avatar" :src="getAvatarUrl(selectedPostMeta.author_avatar)" class="avatar" :alt="selectedPostMeta?.author" />
+              <span v-else class="avatar-placeholder" :style="{ backgroundColor: getAvatarColor(selectedPostMeta?.author) }">{{ selectedPostMeta?.author?.charAt(0) }}</span>
               <span class="detail-author">{{ selectedPostMeta?.author }}</span>
               <span class="detail-time">{{ selectedPostMeta?.release_time }}</span>
             </div>
@@ -72,7 +76,9 @@
                 class="comment"
               >
                 <div class="comment-header">
-                  <span class="comment-author">{{ comment.author }}</span>
+                  <img v-if="comment.author.avatar" :src="getAvatarUrl(comment.author.avatar)" class="avatar-small" :alt="comment.author.name" />
+                  <span v-else class="avatar-placeholder avatar-placeholder-small" :style="{ backgroundColor: getAvatarColor(comment.author.name) }">{{ comment.author.name.charAt(0) }}</span>
+                  <span class="comment-author">{{ comment.author.name }}</span>
                 </div>
                 <p class="comment-text">{{ comment.text }}</p>
 
@@ -83,7 +89,9 @@
                     :key="idx"
                     class="reply"
                   >
-                    <span class="reply-author">{{ reply.author }}:</span>
+                    <img v-if="reply.author.avatar" :src="getAvatarUrl(reply.author.avatar)" class="avatar-tiny" :alt="reply.author.name" />
+                    <span v-else class="avatar-placeholder avatar-placeholder-tiny" :style="{ backgroundColor: getAvatarColor(reply.author.name) }">{{ reply.author.name.charAt(0) }}</span>
+                    <span class="reply-author">{{ reply.author.name }}:</span>
                     <span class="reply-text">{{ reply.text }}</span>
                   </div>
                 </div>
@@ -118,12 +126,14 @@ const selectedPost = ref(null)
 // 过滤后的帖子列表
 const filteredPosts = computed(() => {
   if (!searchQuery.value.trim()) {
-    // 没有搜索词时，显示所有帖子，置顶帖在前
-    return [...allPosts.value].sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1
-      if (!a.pinned && b.pinned) return 1
-      return 0
-    })
+    // 没有搜索词时，只显示非Mizuki的帖子，置顶帖在前
+    return [...allPosts.value]
+      .filter(post => post.author !== 'Mizuki')
+      .sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1
+        if (!a.pinned && b.pinned) return 1
+        return 0
+      })
   }
 
   const query = searchQuery.value.toLowerCase().trim()
@@ -156,7 +166,7 @@ function handleSearch() {
   const query = searchQuery.value.toLowerCase().trim()
 
   // 检查是否搜索了通关关键词
-  if (query === 'dingding10') {
+  if (query === 'wonderhoi') {
     emit('win')
   }
 }
@@ -179,6 +189,29 @@ async function openPost(postId) {
 function closePost() {
   selectedPostId.value = null
   selectedPost.value = null
+}
+
+// 头像颜色池
+const avatarColors = [
+  '#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF',
+  '#E0BBE4', '#957DAD', '#D291BC', '#FEC8D8', '#FFDFD3'
+]
+
+// 获取头像颜色（基于名字生成一致的哈希颜色）
+function getAvatarColor(name) {
+  if (!name) return avatarColors[0]
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const index = Math.abs(hash) % avatarColors.length
+  return avatarColors[index]
+}
+
+// 获取头像URL（avatar已经是完整路径，直接用getImageUrl转换）
+function getAvatarUrl(avatarPath) {
+  if (!avatarPath) return null
+  return getImageUrl(avatarPath)
 }
 </script>
 
@@ -362,8 +395,9 @@ function closePost() {
 
 .post-meta {
   display: flex;
+  align-items: center;
   gap: 12px;
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
   margin-bottom: 8px;
 }
@@ -371,6 +405,52 @@ function closePost() {
 .post-author {
   font-weight: 600;
   color: var(--primary-color);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder-small {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.avatar-tiny {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder-tiny {
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
 }
 
 .post-tags {
@@ -456,6 +536,7 @@ function closePost() {
 
 .detail-meta {
   display: flex;
+  align-items: center;
   gap: 12px;
   font-size: 14px;
   color: #666;
@@ -506,6 +587,9 @@ function closePost() {
 }
 
 .comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 6px;
 }
 
@@ -529,6 +613,9 @@ function closePost() {
 }
 
 .reply {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 6px 0;
   font-size: 13px;
   color: #555;

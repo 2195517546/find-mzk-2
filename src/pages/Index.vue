@@ -1,5 +1,10 @@
 <template>
-  <div class="home-page">
+  <div class="home-page" :class="{ 'broken-mode': gameStore.ruleBroken }">
+    <!-- 乱码闪现层 -->
+    <div v-if="gameStore.ruleBroken" class="glitch-overlay">
+      <span class="glitch-text" v-for="i in 8" :key="i" :style="{ top: glitchPositions[i]?.top, left: glitchPositions[i]?.left, animationDelay: (i * 0.7) + 's' }">{{ glitchChars[i % glitchChars.length] }}</span>
+    </div>
+
     <div class="content">
       <!-- Logo -->
       <div class="logo-container">
@@ -7,14 +12,16 @@
           :src="logoUrl"
           alt="倒立走mzk"
           class="logo"
+          :class="{ 'logo-broken': gameStore.ruleBroken }"
         >
       </div>
 
       <!-- 游戏标题 -->
-      <h1 class="game-title pink-text">寻找晓山瑞希 2</h1>
+      <h1 v-if="!gameStore.ruleBroken" class="game-title pink-text">寻找晓山瑞希 2</h1>
+      <h1 v-else class="game-title broken-title">你破坏了规则</h1>
 
-      <!-- 按钮组 -->
-      <div class="button-group">
+      <!-- 按钮组（正常模式） -->
+      <div v-if="!gameStore.ruleBroken" class="button-group">
         <button class="btn btn-large" @click="startGame">
           {{ hasProgress ? '继续游戏' : '开始游戏' }}
         </button>
@@ -27,6 +34,22 @@
         <button class="btn btn-large" @click="goToMiniGame">
           <img :src="miniGameIconUrl" alt="小游戏" class="mini-game-icon">
           小游戏
+        </button>
+      </div>
+
+      <!-- 按钮组（规则破坏模式） -->
+      <div v-else class="button-group">
+        <button class="btn btn-large btn-broken" @click="goToLevel6">
+          你破坏了规则
+        </button>
+        <button class="btn btn-large btn-broken" @click="newGame">
+          你破坏了规则
+        </button>
+        <button class="btn btn-large btn-broken" @click="showLevelSelector = !showLevelSelector">
+          你破坏了规则
+        </button>
+        <button class="btn btn-large btn-broken" @click="goToMiniGame">
+          你破坏了规则
         </button>
       </div>
 
@@ -128,6 +151,16 @@ const miniGameIconUrl = getImageUrl('images/生气mzk.webp')
 const mzkTestIconUrl = getImageUrl('images/开心mzk.webp')
 const mineSweeperIconUrl = getImageUrl('images/惊吓mzk.webp')
 
+// 乱码字符
+const glitchChars = ['̷̢̛̝̣', '̸̨̻͎̈́', '̶͖̈́̚', '̴̡̛̱', '█̷▓', '░̸̛', '▒̴█', '̶̢̛͔']
+const glitchPositions = {}
+for (let i = 0; i < 12; i++) {
+  glitchPositions[i] = {
+    top: Math.random() * 90 + '%',
+    left: Math.random() * 90 + '%'
+  }
+}
+
 onMounted(() => {
   // 检查是否需要显示存储权限弹窗
   if (!gameStore.hasAcceptedStorage && !sessionStorage.getItem('find-mzk-2-storage-rejected')) {
@@ -187,6 +220,10 @@ const goToMineSweeper = () => {
 const mzkVerifyIconUrl = getImageUrl('images/普通mzk.webp')
 const goToMzkVerify = () => {
   router.push('/mzk-verify')
+}
+
+const goToLevel6 = () => {
+  router.push('/level/6')
 }
 </script>
 
@@ -295,6 +332,76 @@ const goToMzkVerify = () => {
     padding: 14px 28px;
     font-size: 16px;
   }
+}
+
+/* ===== 规则破坏模式 ===== */
+.broken-mode {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 100%) !important;
+}
+
+.broken-title {
+  color: #cc3333 !important;
+  text-shadow: 0 0 10px rgba(204, 51, 51, 0.5);
+  animation: title-flicker 3s ease-in-out infinite;
+}
+
+@keyframes title-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+  93% { opacity: 1; }
+  94% { opacity: 0.3; }
+  95% { opacity: 1; }
+}
+
+.logo-broken {
+  filter: brightness(0.4) saturate(0.3) hue-rotate(330deg) drop-shadow(0 0 20px rgba(204, 51, 51, 0.5)) !important;
+}
+
+.btn-broken {
+  background: transparent !important;
+  border: 2px solid #cc3333 !important;
+  color: #cc3333 !important;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(204, 51, 51, 0.4);
+  animation: btn-glitch 4s ease-in-out infinite;
+}
+
+.btn-broken:hover {
+  background: rgba(204, 51, 51, 0.1) !important;
+}
+
+@keyframes btn-glitch {
+  0%, 100% { transform: none; }
+  96% { transform: none; }
+  97% { transform: translateX(-2px) skewX(-1deg); }
+  98% { transform: translateX(2px) skewX(1deg); }
+  99% { transform: translateX(-1px); }
+}
+
+/* 乱码闪现层 */
+.glitch-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.glitch-text {
+  position: absolute;
+  color: rgba(204, 51, 51, 0.6);
+  font-size: 20px;
+  font-family: monospace;
+  animation: glitch-flash 5s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes glitch-flash {
+  0%, 85%, 100% { opacity: 0; }
+  87% { opacity: 0.8; transform: translate(-2px, 1px); }
+  89% { opacity: 0; }
+  91% { opacity: 0.6; transform: translate(3px, -1px); }
+  93% { opacity: 0; }
 }
 
 /* 小游戏弹窗 */

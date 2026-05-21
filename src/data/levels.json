@@ -17,14 +17,6 @@
   },
   {
     "id": 3,
-    "name": "探索晓山瑞希",
-    "subtitle": "在空无一人的世界中寻找到晓山瑞希",
-    "type": "maze",
-    "difficulty": 2,
-    "description": "迷宫探索"
-  },
-  {
-    "id": 4,
     "name": "搜索晓山瑞希",
     "subtitle": "在论坛中搜索找到晓山瑞希",
     "type": "forum",
@@ -32,9 +24,17 @@
     "description": "论坛搜索"
   },
   {
+    "id": 4,
+    "name": "探索晓山瑞希",
+    "subtitle": "在空无一人的世界中寻找到晓山瑞希",
+    "type": "maze",
+    "difficulty": 2,
+    "description": "迷宫探索"
+  },
+  {
     "id": 5,
     "name": "对决晓山瑞希",
-    "subtitle": "战胜内心的负面情绪",
+    "subtitle": "击败可怕的killamzk",
     "type": "card-battle",
     "difficulty": 3,
     "description": "卡牌战斗"

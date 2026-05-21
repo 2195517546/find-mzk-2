@@ -8,6 +8,7 @@ export const useGameStore = defineStore('game', () => {
   const currentLevel = ref(1)
   const completedLevels = ref([])
   const hasAcceptedStorage = ref(false)
+  const ruleBroken = ref(false)
 
   // 从 localStorage 加载数据
   const loadFromStorage = () => {
@@ -27,6 +28,10 @@ export const useGameStore = defineStore('game', () => {
           completedLevels.value = data.completedLevels
         }
 
+        if (data.ruleBroken) {
+          ruleBroken.value = true
+        }
+
         hasAcceptedStorage.value = true
       }
     } catch (error) {
@@ -43,6 +48,7 @@ export const useGameStore = defineStore('game', () => {
       const data = {
         currentLevel: currentLevel.value,
         completedLevels: completedLevels.value,
+        ruleBroken: ruleBroken.value,
         lastSaved: new Date().toISOString()
       }
       localStorage.setItem('find-mzk-2-save', JSON.stringify(data))
@@ -67,6 +73,11 @@ export const useGameStore = defineStore('game', () => {
   const completeLevel = (levelId) => {
     if (!completedLevels.value.includes(levelId)) {
       completedLevels.value.push(levelId)
+    }
+
+    // 第五关通关标记规则破坏
+    if (levelId === 5) {
+      ruleBroken.value = true
     }
 
     // 更新当前关卡为下一关，但不超过最大关卡数
@@ -94,6 +105,7 @@ export const useGameStore = defineStore('game', () => {
   const resetProgress = () => {
     currentLevel.value = 1
     completedLevels.value = []
+    ruleBroken.value = false
     saveToStorage()
   }
 
@@ -114,6 +126,7 @@ export const useGameStore = defineStore('game', () => {
     currentLevel,
     completedLevels,
     hasAcceptedStorage,
+    ruleBroken,
 
     // 计算属性
     hasProgress,

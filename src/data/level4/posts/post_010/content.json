@@ -1,0 +1,36 @@
+{
+  "post_id": "post_010",
+  "content": "无题。\n\n没有标题的歌，没有名字的人。\n我们都在寻找一个能被叫出的名字。\n\n也许无题本身就是一种答案。\n\n——有一个人一直在画着，她的名字是线索。\n去寻找「ena」。",
+  "author": {
+    "name": "Mizuki",
+    "avatar": null
+  },
+  "comments": [
+    {
+      "comment_id": "c1",
+      "author": {
+        "name": "RiSelf",
+        "avatar": "images/avatars/RiSelf.webp"
+      },
+      "text": "这种文风...Mizuki的帖子越来越神秘了",
+      "replies": [
+        {
+          "author": {
+            "name": "可爱与正义的化身",
+            "avatar": "images/avatars/可爱与正义的化身.webp"
+          },
+          "text": "ena...是「绘名」吧？继续搜索！"
+        }
+      ]
+    },
+    {
+      "comment_id": "c2",
+      "author": {
+        "name": "Tiefblau",
+        "avatar": "images/avatars/Tiefblau.webp"
+      },
+      "text": "蛋⑨大人觉得这像是在玩寻宝游戏",
+      "replies": []
+    }
+  ]
+}

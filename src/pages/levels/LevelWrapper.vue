@@ -22,6 +22,7 @@
       :level-name="levelData.name"
       :total-levels="MAX_LEVEL"
       :message="winMessage"
+      :variant="levelId === 5 ? 'dark' : 'normal'"
       @close="showWinDialog = false"
       @next="goToNextLevel"
       @restart="restartLevel"
@@ -102,7 +103,7 @@ const handleWin = (data) => {
     winMessage.value = data
       ? '你成功进入了晓山瑞希！\n🎉 隐藏彩蛋：你发现了67号日期！'
       : '你成功进入了晓山瑞希！'
-  } else if (props.levelId === 3) {
+  } else if (props.levelId === 4) {
     if (data?.foundAllMikus) {
       winMessage.value = '你成功探索了晓山瑞希！\n🎉 隐藏结局：你找到了全部7个miku！'
     } else {
