@@ -104,7 +104,7 @@ export const useGameStore = defineStore('game', () => {
       ruleBroken.value = true
     }
 
-    // 第六关通关恢复规则破坏状态（救赎成功）
+    // 第六关通关恢复破坏模式（救赎成功，但规则划掉状态保留）
     if (levelId === 6) {
       ruleBroken.value = false
     }
@@ -137,6 +137,18 @@ export const useGameStore = defineStore('game', () => {
     ruleBroken.value = false
     hasSeenDisclaimer.value = false
     rule2Broken.value = false
+    saveToStorage()
+  }
+
+  // 解锁所有关卡（管理员功能）
+  const unlockAllLevels = () => {
+    completedLevels.value = []
+    for (let i = 1; i <= MAX_LEVEL; i++) {
+      if (!completedLevels.value.includes(i)) {
+        completedLevels.value.push(i)
+      }
+    }
+    currentLevel.value = MAX_LEVEL
     saveToStorage()
   }
 
@@ -174,6 +186,7 @@ export const useGameStore = defineStore('game', () => {
     isLevelCompleted,
     isLevelUnlocked,
     resetProgress,
+    unlockAllLevels,
     markDisclaimerSeen,
     breakRule2
   }

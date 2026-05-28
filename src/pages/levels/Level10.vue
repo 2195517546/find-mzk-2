@@ -1,30 +1,9 @@
 <template>
-  <div class="level-placeholder">
-    <h3 class="instruction">第10关</h3>
-    <p class="coming-soon">敬请期待</p>
-  </div>
+  <SuperMzkPlatformer @win="$emit('win')" />
 </template>
 
 <script setup>
+import SuperMzkPlatformer from '@/components/level10/SuperMzkPlatformer.vue'
+
 defineEmits(['win'])
 </script>
-
-<style scoped>
-.level-placeholder {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.instruction {
-  font-size: 24px;
-  color: var(--primary-color);
-  margin-bottom: 16px;
-}
-.coming-soon {
-  font-size: 16px;
-  color: #999;
-}
-</style>

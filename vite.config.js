@@ -4,7 +4,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/games/2/',  // 部署路径，必须与Nginx配置一致
+  base: process.env.NODE_ENV === 'production' ? '/games/2/' : '/',
   plugins: [vue()],
   resolve: {
     alias: {

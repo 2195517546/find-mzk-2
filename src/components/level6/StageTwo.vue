@@ -121,6 +121,7 @@
           :style="getSlotStyle(index)"
           @dragover.prevent
           @drop="handleDrop(index, $event)"
+          @click="handleSlotClick(index)"
         >
           <span class="slot-number">{{ slot.level }}</span>
           <div
@@ -128,6 +129,7 @@
             class="slot-item-wrapper"
             draggable="true"
             @dragstart="handleSlotDragStart(index, $event)"
+            @click.stop="handleSlotItemClick(index)"
           >
             <img :src="slot.item.url" :alt="slot.item.name" class="slot-item">
           </div>
@@ -144,14 +146,16 @@
 
     <!-- 物品栏 -->
     <div class="items-container">
-      <div class="items-title">拖动祭品</div>
+      <div class="items-title">拖动或者点击祭品献祭</div>
       <div class="items-grid" @dragover.prevent @drop="handleDropToItems">
         <div
           v-for="(item, index) in availableItems"
           :key="index"
           class="item"
+          :class="{ 'item-selected': selectedItemIndex === index }"
           draggable="true"
           @dragstart="handleDragStart(index, $event)"
+          @click="handleItemClick(index)"
         >
           <img :src="item.url" :alt="item.name" class="item-image">
           <div class="item-tooltip">{{ item.name }}</div>
@@ -231,6 +235,7 @@ const slots = ref([
 const availableItems = ref([])
 const draggedItemIndex = ref(null)
 const draggedSlotIndex = ref(null) // 新增：从插槽拖动的索引
+const selectedItemIndex = ref(null) // 点击选中的物品栏索引
 const showSuccessDialog = ref(false)
 const showFailDialog = ref(false)
 const isGlitching = ref(false)
@@ -292,13 +297,49 @@ const loadItems = () => {
 const handleDragStart = (index, event) => {
   draggedItemIndex.value = index
   draggedSlotIndex.value = null
+  selectedItemIndex.value = null
   event.dataTransfer.effectAllowed = 'move'
 }
 
 const handleSlotDragStart = (slotIndex, event) => {
   draggedSlotIndex.value = slotIndex
   draggedItemIndex.value = null
+  selectedItemIndex.value = null
   event.dataTransfer.effectAllowed = 'move'
+}
+
+// 点击物品栏中的物品：选中 / 取消选中
+const handleItemClick = (index) => {
+  if (selectedItemIndex.value === index) {
+    selectedItemIndex.value = null
+  } else {
+    selectedItemIndex.value = index
+  }
+}
+
+// 点击插槽：若有选中物品则放入，若插槽有物品则取回
+const handleSlotClick = (slotIndex) => {
+  if (selectedItemIndex.value !== null) {
+    // 有选中物品，尝试放入插槽
+    if (slots.value[slotIndex].item) {
+      // 插槽已有物品，不允许放入
+      return
+    }
+    const item = availableItems.value[selectedItemIndex.value]
+    slots.value[slotIndex].item = item
+    availableItems.value.splice(selectedItemIndex.value, 1)
+    selectedItemIndex.value = null
+  }
+}
+
+// 点击插槽内已放入的物品：取回到物品栏
+const handleSlotItemClick = (slotIndex) => {
+  selectedItemIndex.value = null
+  const item = slots.value[slotIndex].item
+  if (item) {
+    slots.value[slotIndex].item = null
+    availableItems.value.push(item)
+  }
 }
 
 const handleDrop = (slotIndex, event) => {
@@ -742,6 +783,12 @@ onMounted(() => {
 
 .item:active {
   cursor: grabbing;
+}
+
+.item-selected {
+  border-color: #cc3333;
+  box-shadow: 0 0 10px rgba(204, 51, 51, 0.7);
+  transform: scale(1.08);
 }
 
 .item-image {

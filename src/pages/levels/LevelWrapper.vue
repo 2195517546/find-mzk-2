@@ -1,5 +1,5 @@
 <template>
-  <div class="level-wrapper">
+  <div class="level-wrapper" :class="{ 'hide-footer': levelId === 8 || levelId === 10 }">
     <TopBar
       :title="levelData.name"
       :subtitle="levelData.subtitle"
@@ -13,8 +13,6 @@
         @win="handleWin"
       />
     </div>
-
-    <Footer />
 
     <WinDialog
       :show="showWinDialog"
@@ -109,6 +107,8 @@ const handleWin = (data) => {
     } else {
       winMessage.value = `你成功探索了晓山瑞希！\n（提示：还有 ${data?.missingCount || 0} 个miku未找到）`
     }
+  } else if (props.levelId === 9) {
+    winMessage.value = '你成功击败了怪核！\n晓山瑞希的世界恢复了和平！'
   } else {
     winMessage.value = '你成功找到了晓山瑞希！'
   }
@@ -134,6 +134,7 @@ const restartLevel = () => {
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  overflow: hidden;
 }
 
 .level-content {
@@ -141,5 +142,13 @@ const restartLevel = () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.hide-footer {
+  height: 100vh;
+}
+
+.hide-footer .level-content {
+  height: calc(100vh - 60px);
 }
 </style>

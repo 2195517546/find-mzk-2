@@ -1,5 +1,10 @@
 <template>
   <div class="home-page" :class="{ 'broken-mode': gameStore.ruleBroken }">
+    <!-- 管理员按钮 -->
+    <button class="admin-btn" @click="unlockAllLevels" title="解锁所有关卡">
+      ⚙️
+    </button>
+
     <!-- 乱码闪现层 -->
     <div v-if="gameStore.ruleBroken" class="glitch-overlay">
       <span class="glitch-text" v-for="i in 8" :key="i" :style="{ top: glitchPositions[i]?.top, left: glitchPositions[i]?.left, animationDelay: (i * 0.7) + 's' }">{{ glitchChars[i % glitchChars.length] }}</span>
@@ -75,6 +80,7 @@
       v-if="showDisclaimerDialog"
       :show="showDisclaimerDialog"
       :is-rule3-violated="gameStore.ruleBroken"
+      :is-rule2-violated="gameStore.rule2Broken"
       @accept="handleAcceptDisclaimer"
       @close="showDisclaimerDialog = false"
     />
@@ -257,9 +263,38 @@ const goToMzkVerify = () => {
 const goToLevel6 = () => {
   router.push('/level/6')
 }
+
+const unlockAllLevels = () => {
+  gameStore.unlockAllLevels()
+  alert('已解锁所有关卡！')
+}
 </script>
 
 <style scoped>
+/* 管理员按钮 */
+.admin-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: rotate(30deg);
+}
+
 .home-page {
   min-height: 100vh;
   display: flex;

@@ -49,34 +49,34 @@
   },
   {
     "id": 7,
-    "name": "第7关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "松鼠晓山瑞希",
+    "subtitle": "寻找在文字之上的线索",
+    "type": "squirrel-library",
+    "difficulty": 3,
+    "description": "松鼠文档库"
   },
   {
     "id": 8,
-    "name": "第8关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "上100层",
+    "subtitle": "跟随她上升100层平台",
+    "type": "platform-descent",
+    "difficulty": 3,
+    "description": "逆向平台跳跃游戏"
   },
   {
     "id": 9,
-    "name": "第9关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "小心晓山瑞希！",
+    "subtitle": "塔防挑战！阻止怪核入侵！",
+    "type": "tower-defense",
+    "difficulty": 2,
+    "description": "塔防游戏"
   },
   {
     "id": 10,
-    "name": "第10关",
-    "subtitle": "待实现",
-    "type": "pending",
-    "difficulty": 1,
-    "description": "待实现"
+    "name": "超级晓山瑞希",
+    "subtitle": "在像素世界里寻找她！",
+    "type": "platformer",
+    "difficulty": 3,
+    "description": "超级马里奥风格的平台跳跃游戏"
   }
 ]

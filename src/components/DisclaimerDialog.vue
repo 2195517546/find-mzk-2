@@ -28,9 +28,9 @@
                   <span class="rule-number">2</span>
                   <span class="rule-text" :class="{ 'rule-text-violated': isRule2Violated }">每一种晓山瑞希只存在一个</span>
                 </div>
-                <div class="rule-item" :class="{ 'rule-violated': isRule3Violated }">
+                <div class="rule-item" :class="{ 'rule-violated': isRule3Violated || isRule2Violated }">
                   <span class="rule-number">3</span>
-                  <span class="rule-text" :class="{ 'rule-text-violated': isRule3Violated }">晓山瑞希之间严禁相互伤害</span>
+                  <span class="rule-text" :class="{ 'rule-text-violated': isRule3Violated || isRule2Violated }">晓山瑞希之间严禁相互伤害</span>
                 </div>
               </div>
             </div>

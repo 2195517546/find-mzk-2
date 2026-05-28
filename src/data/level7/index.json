@@ -1,0 +1,65 @@
+[
+  {
+    "id": "key_info",
+    "title": "关键信息",
+    "description": "关于晓山瑞希的核心记录，似乎被反复修改过。",
+    "file": "关键信息.txt",
+    "tags": ["核心", "警告"],
+    "keyword": "规则"
+  },
+  {
+    "id": "squirrel_story",
+    "title": "松鼠的故事",
+    "description": "一只松鼠与一个女孩的奇怪寓言。",
+    "file": "松鼠的故事.txt",
+    "tags": ["寓言"],
+    "keyword": "矛盾"
+  },
+  {
+    "id": "human_squirrel",
+    "title": "三只松鼠",
+    "description": "面对困境，就把心交给希望。",
+    "file": "鼠真人.txt",
+    "tags": ["寓言", "希望"],
+    "keyword": "希望"
+  },
+  {
+    "id": "ding_sutra",
+    "title": "钉经",
+    "description": "意淫记、出工厂纪、钉钉福音……",
+    "file": "钉经.txt",
+    "tags": ["经典"],
+    "keyword": "创造"
+  },
+  {
+    "id": "shadow_record",
+    "title": "影子记录",
+    "description": "关于晓山瑞希影子的笔记……",
+    "file": "影子记录.txt",
+    "tags": ["秘密", "影子"],
+    "keyword": "意识"
+  },
+  {
+    "id": "birth",
+    "title": "诞生之初",
+    "description": "晓山瑞希还没有这条规则的时候。",
+    "file": "诞生之初.txt",
+    "tags": ["秘密"],
+    "keyword": "第七天"
+  },
+  {
+    "id": "letter_to_squirrel",
+    "title": "致松鼠",
+    "description": "一封写给松鼠晓山瑞希的信……",
+    "file": "致松鼠.txt",
+    "tags": ["信", "救赎"],
+    "keyword": "你自己"
+  },
+  {
+    "id": "rule_fragments",
+    "title": "规则残页",
+    "description": "一些破碎的规则片段，记录着世界的裂缝。",
+    "file": "规则残页.txt",
+    "tags": ["规则"]
+  }
+]
